@@ -1,0 +1,44 @@
+<?php
+
+namespace App\Controller;
+
+use App\Entity\Category;
+use App\Repository\CategoryRepository;
+use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
+
+class CategoryController extends AbstractController
+{
+    #[Route('/category', name: 'app_category')]
+    public function index(): Response
+    {
+        return $this->render('category/index.html.twig', [
+            'controller_name' => 'CategoryController',
+        ]);
+    }
+
+    #[Route('/create-category', name: 'create_category')]
+    public function createUser(ManagerRegistry $doctrine, ValidatorInterface $validator): Response
+    {
+        $categoryRepository = new CategoryRepository($doctrine);
+
+        $category = new Category();
+        $category->setTitle('grab');
+        $category->setSlug('grab');
+        $category->setDateAdd($categoryRepository->CurrentDate);
+
+        $errors = $validator->validate($category);
+        if (count($errors) > 0) {
+            return new Response((string) $errors, 400);
+        }
+
+        $entityManager = $doctrine->getManager();
+        $entityManager->persist($category);
+        $entityManager->flush();
+
+        return new Response('Saved new category with id '.$category->getId());
+    }
+}

@@ -1,0 +1,25 @@
+{% extends "layout.html.twig" %}
+
+{% block title %}Accueil{% endblock %}
+{# Used to add information to the header in addition to that contained in the base template header
+{% block head %}
+    {{ parent() }}
+{% endblock %}
+#}
+{% block content %}
+    <div class="container p-5">
+        <h3>Liste des figures de snowboard</h3>
+        <table>
+            {% for trick in tricks %}
+                <tr>
+                    <td>{{ trick }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock %}
+{# Used to add information to the footer in addition to that contained in the base template footer
+{% block footer %}
+    {{ parent() }}
+{% endblock %}
+#}
