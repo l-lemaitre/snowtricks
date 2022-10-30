@@ -21,7 +21,7 @@ class ImageController extends AbstractController
     }
 
     #[Route('/create-image', name: 'create_image')]
-    public function createUser(ManagerRegistry $doctrine, ValidatorInterface $validator): Response
+    public function createImage(ManagerRegistry $doctrine, ValidatorInterface $validator): Response
     {
         $trick = $doctrine->getRepository(Trick::class)->find(1);
 

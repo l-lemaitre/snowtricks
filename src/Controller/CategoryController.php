@@ -21,13 +21,13 @@ class CategoryController extends AbstractController
     }
 
     #[Route('/create-category', name: 'create_category')]
-    public function createUser(ManagerRegistry $doctrine, ValidatorInterface $validator): Response
+    public function createCategory(ManagerRegistry $doctrine, ValidatorInterface $validator): Response
     {
         $categoryRepository = new CategoryRepository($doctrine);
 
         $category = new Category();
-        $category->setTitle('grab');
-        $category->setSlug('grab');
+        $category->setTitle('other');
+        $category->setSlug('other');
         $category->setDateAdd($categoryRepository->CurrentDate);
 
         $errors = $validator->validate($category);

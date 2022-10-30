@@ -5,7 +5,6 @@ namespace App\Entity;
 use App\Repository\ImageRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ImageRepository::class)]
 #[UniqueEntity('url')]
@@ -17,11 +16,10 @@ class Image
     private ?int $id = null;
 
     #[ORM\Column(length: 255, unique: true)]
-    #[Assert\NotNull]
     private ?string $url = null;
 
-    #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false, referencedColumnName: 'id_trick')]
+    #[ORM\ManyToOne(inversedBy: 'images')]
+    #[ORM\JoinColumn(referencedColumnName: 'id_trick')]
     private ?Trick $trick = null;
 
     public function getId(): ?int

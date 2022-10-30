@@ -6,7 +6,6 @@ use App\Repository\UserRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[UniqueEntity(fields: ['username', 'email'])]
@@ -18,15 +17,12 @@ class User
     private ?int $id = null;
 
     #[ORM\Column(length: 255, unique: true)]
-    #[Assert\NotNull]
     private ?string $username = null;
 
     #[ORM\Column(length: 255, unique: true)]
-    #[Assert\Email]
     private ?string $email = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotNull]
     private ?string $password = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -39,11 +35,9 @@ class User
     private ?string $profile_picture = null;
 
     #[ORM\Column(type: Types::SMALLINT)]
-    #[Assert\NotNull]
     private ?int $deleted = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    #[Assert\NotNull]
     private ?\DateTimeInterface $registration_date = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]

@@ -33,10 +33,8 @@ class UserController extends AbstractController
         $user->setPassword('Test');
         $user->setLastname('Lemaître');
         $user->setFirstname('Ludovic');
-        //$user->setProfilePicture('');
         $user->setDeleted(0);
         $user->setRegistrationDate($userRepository->CurrentDate);
-        //$user->setUnsubscribeDate('');
 
         $errors = $validator->validate($user);
         if (count($errors) > 0) {
@@ -52,24 +50,6 @@ class UserController extends AbstractController
         return new Response('Saved new user with id '.$user->getId());
     }
 
-    /*#[Route('/user/{id}', name: 'user_show')]
-    public function show(ManagerRegistry $doctrine, int $id): Response
-    {
-        $user = $doctrine->getRepository(User::class)->find($id);
-
-        if (!$user) {
-            throw $this->createNotFoundException(
-                'No user found for id '.$id
-            );
-        }
-
-        return new Response('Check out this great user : '.$user->getUsername());
-
-        // or render a template
-        // in the template, print things with {{ user.name }}
-        // return $this->render('user/show.html.twig', ['user' => $user]);
-    }*/
-
     #[Route('/user/{id}', name: 'user_show')]
     public function show(int $id, UserRepository $userRepository, ManagerRegistry $doctrine): Response
     {
@@ -83,7 +63,11 @@ class UserController extends AbstractController
         // look for *all* User objects
         $users = $repository->findAll();
 
-        return new Response('Check out this great user : '.$user->getUsername());
+        //return new Response('Check out this great user : '.$user->getUsername());
+
+        echo "<pre>";
+        var_dump($users);
+        exit;
     }
 
     #[Route('/user/edit/{id}', name: 'user_edit')]
