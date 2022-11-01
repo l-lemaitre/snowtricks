@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="fr">
+	<head>
+        {% block head %}
+            <!-- Meta -->
+            <meta charset="UTF-8" />
+            <meta name="description" content="Site collaboratif SnowTricks" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+            <link href="favicon.ico" rel="icon" type="image/ico" />
+            <title>SnowTricks | {% block title %}{% endblock %}</title>
+            <!-- CSS Vendor -->
+            {# <link href="/css/fontawesome-all.css" rel="stylesheet" type="text/css" /> #}
+            <!-- Main CSS theme (includes Bootstrap) -->
+            {% block stylesheets %}{{ encore_entry_link_tags('app') }}{% endblock %}
+            <!-- Custom CSS -->
+            <link href="/css/stylesheet.css" rel="stylesheet" type="text/css" />
+        {% endblock %}
+	</head>
+    <body>
+        <!-- HEADER -->
+        {% block header %}
+            <header>
+                <div class="navbar navbar-default navbar-static-top" role="navigation">
+                    <div class="container">
+                        <div class="navbar-header col-md-3 col-lg-2">
+                            <a class="navbar-brand" href="{{ path('home_page') }}">SnowTricks</a>
+                        </div>
+                    </div>
+                </div>
+            </header>
+        {% endblock %}
+		<!-- MAIN CONTENT -->
+		<main>
+            {% block content %}{% endblock %}
+		</main>
+        <!-- FOOTER -->
+        {% block footer %}
+		    <footer class="fixed-bottom">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p>&copy; {{ 'now'|date('Y') }} - <a href="mailto:contact@llemaitre.com">Ludovic LEMAÎTRE</a>. {{ 'Tous droits réservés'|trans }}</p>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        {% endblock %}
+        <!-- Bootstrap JS -->
+        {% block javascripts %}{{ encore_entry_script_tags('app') }}{% endblock %}
+    </body>
+</html>

@@ -1,0 +1,36 @@
+@charset "UTF-8";
+/* CSS GLOBAL Document */
+
+header {
+  background-color: #129ce7;
+
+  .container {
+    a {
+      color: rgb(255, 255, 255);
+    }
+
+    a:hover {
+      color: rgb(10, 88, 202);
+    }
+  }
+}
+
+/* PAGE ADD-TRICK.HTML.TWIG */
+.trick-embed {
+  margin-top: -0.7rem;
+  white-space: pre-line;
+}
+
+footer {
+  background-color: #129ce7;
+
+  p {
+    margin: 0.5rem 0;
+
+    color: rgb(255, 255, 255);
+
+    a {
+    color: rgb(255, 255, 255);
+    }
+  }
+}

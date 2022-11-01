@@ -1,0 +1,22 @@
+/* CSS GLOBAL Document */
+header {
+  background-color: #129ce7; }
+  header .container a {
+    color: white; }
+  header .container a:hover {
+    color: #0a58ca; }
+
+/* PAGE ADD-TRICK.HTML.TWIG */
+.trick-embed {
+  margin-top: -0.7rem;
+  white-space: pre-line; }
+
+footer {
+  background-color: #129ce7; }
+  footer p {
+    margin: 0.5rem 0;
+    color: white; }
+    footer p a {
+      color: white; }
+
+/*# sourceMappingURL=stylesheet.css.map */
