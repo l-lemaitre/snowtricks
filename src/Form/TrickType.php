@@ -32,14 +32,10 @@ class TrickType extends AbstractType
                 'label' => 'Catégorie',
                 'choice_label' => 'title',
                 'constraints' => [
-                    new NotBlank(),
                     new NotNull()
                 ]
             ])
             ->add('image', FileType::class, [
-                'mapped' => false
-            ])
-            /*->add('image', FileType::class, [
                 'label' => 'Image(s)',
                 'mapped' => false,
                 'multiple' => true,
@@ -55,9 +51,15 @@ class TrickType extends AbstractType
                                 'mimeTypesMessage' => 'Please upload a valid image file.',
                             ])
                         ]
-                    ])
+                    ]),
+                    new NotNull()
                 ]
-            ])*/
+            ])
+            ->add('video', TextType::class, [
+                'label' => 'Vidéo',
+                'mapped' => false,
+                'required' => false
+            ])
             ->add('title', TextType::class, [
                 'label' => 'Titre',
                 'constraints' => [
@@ -90,7 +92,6 @@ class TrickType extends AbstractType
                 ],
                 'label' => 'Publié',
                 'constraints' => [
-                    new NotBlank(),
                     new NotNull()
                 ]
             ])

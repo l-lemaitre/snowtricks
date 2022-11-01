@@ -54,9 +54,17 @@ class Trick
     #[ORM\OneToMany(mappedBy: 'trick', targetEntity: Image::class)]
     private Collection $images;
 
+    #[ORM\OneToMany(mappedBy: 'trick', targetEntity: Video::class)]
+    private Collection $videos;
+
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false, referencedColumnName: 'id_video')]
+    private ?Video $video = null;
+
     public function __construct()
     {
         $this->images = new ArrayCollection();
+        $this->videos = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -210,6 +218,48 @@ class Trick
                 $image->setTrick(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Video>
+     */
+    public function getVideos(): Collection
+    {
+        return $this->videos;
+    }
+
+    public function addVideo(Video $videos): self
+    {
+        if (!$this->videos->contains($videos)) {
+            $this->videos->add($videos);
+            $videos->setTrick($this);
+        }
+
+        return $this;
+    }
+
+    public function removeVideo(Video $videos): self
+    {
+        if ($this->videos->removeElement($videos)) {
+            // set the owning side to null (unless already changed)
+            if ($videos->getTrick() === $this) {
+                $videos->setTrick(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getVideo(): ?Video
+    {
+        return $this->video;
+    }
+
+    public function setVideo(?Video $video): self
+    {
+        $this->video = $video;
 
         return $this;
     }

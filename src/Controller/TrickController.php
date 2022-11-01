@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Image;
 use App\Entity\Trick;
 use App\Entity\User;
+use App\Entity\Video;
 use App\Form\TrickType;
 use App\Repository\TrickRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -37,30 +38,49 @@ class TrickController extends AbstractController
             $user = $doctrine->getRepository(User::class)->find(1);
             $trick->setUser($user);
 
-            $img = $form->get('image')->getData();
+            $imgs = $form->get('image')->getData();
 
-            $originalFilename = pathinfo($img->getClientOriginalName(), PATHINFO_FILENAME);
-            // this is needed to safely include the file name as part of the URL
-            $safeFilename = $slugger->slug($originalFilename);
-            $newFilename = $safeFilename.'-'.uniqid().'.'.$img->guessExtension();
+            $entityManager = $doctrine->getManager();
 
-            // Move the file to the directory where images are stored
-            try {
-                $img->move(
-                    $this->getParameter('img_directory'),
-                    $newFilename
-                );
-            } catch (FileException $e) {
-                // ... handle exception if something happens during file upload
+            foreach ($imgs as $img) {
+                $originalFilename = pathinfo($img->getClientOriginalName(), PATHINFO_FILENAME);
+                // this is needed to safely include the file name as part of the URL
+                $safeFilename = $slugger->slug($originalFilename);
+                $newFilename = $safeFilename . '-' . uniqid() . '.' . $img->guessExtension();
 
-                return 'Error upload.';
+                // Move the file to the directory where images are stored
+                try {
+                    $img->move(
+                        $this->getParameter('img_directory'),
+                        $newFilename
+                    );
+                } catch (FileException $e) {
+                    // Handle exception if something happens during file upload
+                    return 'Error upload.';
+                }
+
+                $image = new Image();
+                $image->setTrick($trick);
+                $image->setUrl("/img/" . $newFilename);
+
+                $entityManager->persist($image);
+
+                $trick->setImage($image);
+                $trick->addImage($image);
             }
 
-            $image = new Image();
-            $image->setTrick($trick);
-            $image->setUrl("/img/".$newFilename);
+            $videos = $form->get('video')->getData();
 
-            $trick->setImage($image);
+            if ($videos) {
+                $video = new Video();
+                $video->setTrick($trick);
+                $video->setUrl($videos);
+
+                $entityManager->persist($video);
+
+                $trick->setVideo($video);
+                $trick->addVideo($video);
+            }
 
             $trick->setDeleted(0);
 
@@ -68,15 +88,13 @@ class TrickController extends AbstractController
             $trick->setDateAdd($trickRepository->CurrentDate);
             $trick->setDateUpdated($trickRepository->CurrentDate);
 
-            $entityManager = $doctrine->getManager();
             $entityManager->persist($trick);
-            $entityManager->persist($image);
             $entityManager->flush();
 
             return $this->redirectToRoute('home_page');
         }
 
-        return $this->render('form/add.html.twig', array(
+        return $this->render('form/add-trick.html.twig', array(
             'form' => $form->createView(),
         ));
     }

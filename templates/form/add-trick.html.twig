@@ -7,6 +7,11 @@
             {{ form_start(form) }}
                 {{ form_row(form.category) }}
                 {{ form_row(form.image) }}
+                {{ form_row(form.video) }}
+                <div class="trick-embed form-text mb-3 help-text">Intégrer la vidéo d'un site de streaming :
+                    Allez sur la page de la vidéo, cliquez sur "Partager" puis sélectionnez l'option "Intégrer"
+                    Collez uniquement dans le champ de saisie ci-dessous la partie contenant l'adresse de la vidéo (<u>sans les guillements</u>, comme sur cette <a href="/img/src_iframe.png" target="_blank">image</a>)
+                </div>
                 {{ form_row(form.title) }}
                 {{ form_row(form.contents) }}
                 {{ form_row(form.slug) }}
