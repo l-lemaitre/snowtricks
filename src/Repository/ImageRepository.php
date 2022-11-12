@@ -39,6 +39,15 @@ class ImageRepository extends ServiceEntityRepository
         }
     }
 
+    public function getImages($id)
+    {
+        $queryBuilder = $this->createQueryBuilder('i')
+            ->select('i.url')
+            ->where('i.trick = :id')
+            ->setParameter('id', $id);
+        return $queryBuilder->getQuery()->getResult();
+    }
+
 //    /**
 //     * @return Image[] Returns an array of Image objects
 //     */

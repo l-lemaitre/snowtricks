@@ -7,12 +7,13 @@
 {% endblock %}
 #}
 {% block content %}
-    <div class="container p-5">
+    <div class="home container p-5">
         <h3>Liste des figures de snowboard</h3>
         <table>
             {% for trick in tricks %}
                 <tr>
-                    <td>{{ trick.title }}</td>
+                    <td>{{ trick.getTitle }}</td>
+                    <td>{{ trick.getImage.getUrl }}</td>
                 </tr>
             {% endfor %}
         </table>
