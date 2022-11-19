@@ -1,13 +1,13 @@
 # ************************************************************
 # Sequel Ace SQL dump
-# Version 20035
+# Version 20039
 #
 # https://sequel-ace.com/
 # https://github.com/Sequel-Ace/Sequel-Ace
 #
-# Host: 127.0.0.1 (MySQL 8.0.30)
+# Host: 127.0.0.1 (MySQL 8.0.31)
 # Database: snowtricks
-# Generation Time: 2022-10-16 17:47:30 +0000
+# Generation Time: 2022-11-01 14:29:08 +0000
 # ************************************************************
 
 
@@ -40,7 +40,8 @@ LOCK TABLES `category` WRITE;
 
 INSERT INTO `category` (`id_category`, `title`, `slug`, `date_add`)
 VALUES
-	(1,'grab','grab','2022-10-16 16:37:53');
+	(1,'grab','grab','2022-10-16 16:37:53'),
+	(2,'other','other','2022-10-23 11:30:52');
 
 /*!40000 ALTER TABLE `category` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -63,7 +64,9 @@ LOCK TABLES `doctrine_migration_versions` WRITE;
 
 INSERT INTO `doctrine_migration_versions` (`version`, `executed_at`, `execution_time`)
 VALUES
-	('DoctrineMigrations\\Version20221016161456','2022-10-16 16:15:04',171);
+	('DoctrineMigrations\\Version20221016161456','2022-11-01 12:38:11',178),
+	('DoctrineMigrations\\Version20221023125511','2022-11-01 12:38:12',16),
+	('DoctrineMigrations\\Version20221101110621','2022-11-01 12:38:12',31);
 
 /*!40000 ALTER TABLE `doctrine_migration_versions` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -76,7 +79,7 @@ DROP TABLE IF EXISTS `image`;
 
 CREATE TABLE `image` (
   `id_image` int NOT NULL AUTO_INCREMENT,
-  `trick_id` int NOT NULL,
+  `trick_id` int DEFAULT NULL,
   `url` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`id_image`),
   UNIQUE KEY `UNIQ_C53D045FF47645AE` (`url`),
@@ -89,7 +92,8 @@ LOCK TABLES `image` WRITE;
 
 INSERT INTO `image` (`id_image`, `trick_id`, `url`)
 VALUES
-	(1,1,'/img/Picswiss_VD-44-23.jpeg');
+	(1,1,'/img/Picswiss-VD-44-23-6361257049384.jpg'),
+	(2,2,'/img/snowboard-neige-figure-saut-shutterstock-3516624621-63612cd79e80c.jpg');
 
 /*!40000 ALTER TABLE `image` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -164,6 +168,7 @@ CREATE TABLE `trick` (
   `category_id` int NOT NULL,
   `user_id` int NOT NULL,
   `image_id` int NOT NULL,
+  `video_id` int DEFAULT NULL,
   `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `contents` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
   `slug` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -177,7 +182,9 @@ CREATE TABLE `trick` (
   KEY `IDX_D8F0A91E12469DE2` (`category_id`),
   KEY `IDX_D8F0A91EA76ED395` (`user_id`),
   KEY `IDX_D8F0A91E3DA5256D` (`image_id`),
+  KEY `IDX_D8F0A91E29C1004E` (`video_id`),
   CONSTRAINT `FK_D8F0A91E12469DE2` FOREIGN KEY (`category_id`) REFERENCES `category` (`id_category`),
+  CONSTRAINT `FK_D8F0A91E29C1004E` FOREIGN KEY (`video_id`) REFERENCES `video` (`id_video`),
   CONSTRAINT `FK_D8F0A91E3DA5256D` FOREIGN KEY (`image_id`) REFERENCES `image` (`id_image`),
   CONSTRAINT `FK_D8F0A91EA76ED395` FOREIGN KEY (`user_id`) REFERENCES `user` (`id_user`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -185,9 +192,10 @@ CREATE TABLE `trick` (
 LOCK TABLES `trick` WRITE;
 /*!40000 ALTER TABLE `trick` DISABLE KEYS */;
 
-INSERT INTO `trick` (`id_trick`, `category_id`, `user_id`, `image_id`, `title`, `contents`, `slug`, `published`, `deleted`, `date_add`, `date_updated`)
+INSERT INTO `trick` (`id_trick`, `category_id`, `user_id`, `image_id`, `video_id`, `title`, `contents`, `slug`, `published`, `deleted`, `date_add`, `date_updated`)
 VALUES
-	(1,1,1,1,'mute','Test.','mute',1,0,'2022-10-16 17:40:01','2022-10-16 17:40:01');
+	(1,1,1,1,NULL,'mute','Test mute.','mute',1,0,'2022-11-01 13:56:00','2022-11-01 13:56:00'),
+	(2,1,1,2,1,'sad','Test sad.','sad',1,0,'2022-11-01 14:27:35','2022-11-01 14:27:35');
 
 /*!40000 ALTER TABLE `trick` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -222,6 +230,32 @@ VALUES
 	(1,'Nerofaust','ludoviclemaitre@orange.fr','Test','Lemaître','Ludovic',NULL,0,'2022-10-16 16:17:12',NULL);
 
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
+# Dump of table video
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `video`;
+
+CREATE TABLE `video` (
+  `id_video` int NOT NULL AUTO_INCREMENT,
+  `trick_id` int DEFAULT NULL,
+  `url` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`id_video`),
+  UNIQUE KEY `UNIQ_7CC7DA2CF47645AE` (`url`),
+  KEY `IDX_7CC7DA2CB281BE2E` (`trick_id`),
+  CONSTRAINT `FK_7CC7DA2CB281BE2E` FOREIGN KEY (`trick_id`) REFERENCES `trick` (`id_trick`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+LOCK TABLES `video` WRITE;
+/*!40000 ALTER TABLE `video` DISABLE KEYS */;
+
+INSERT INTO `video` (`id_video`, `trick_id`, `url`)
+VALUES
+	(1,2,'https://www.youtube.com/embed/oLnvs5IdPFg');
+
+/*!40000 ALTER TABLE `video` ENABLE KEYS */;
 UNLOCK TABLES;
 
 

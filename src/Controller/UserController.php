@@ -55,6 +55,7 @@ class UserController extends AbstractController
     {
         $user = $userRepository->find($id);
 
+
         $repository = $doctrine->getRepository(User::class);
 
         // look for a single User by its primary key (usually "id")
@@ -65,8 +66,10 @@ class UserController extends AbstractController
 
         //return new Response('Check out this great user : '.$user->getUsername());
 
+
         echo "<pre>";
-        var_dump($users);
+        dump($user);
+        //dump($users);
         exit;
     }
 

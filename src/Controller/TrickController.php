@@ -2,11 +2,16 @@
 
 namespace App\Controller;
 
+use App\Entity\Category;
 use App\Entity\Image;
 use App\Entity\Trick;
 use App\Entity\User;
 use App\Entity\Video;
-use App\Form\TrickType;
+use App\Form\AddTrickType;
+use App\Form\EditTrickImageType;
+use App\Form\EditTrickType;
+use App\Form\EditTrickVideoType;
+use App\Form\RemoveTrickType;
 use App\Repository\TrickRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -23,7 +28,7 @@ class TrickController extends AbstractController
     public function index(): Response
     {
         return $this->render('trick/index.html.twig', [
-            'controller_name' => 'TrickController',
+            'controller_name' => 'TrickController'
         ]);
     }
 
@@ -31,7 +36,8 @@ class TrickController extends AbstractController
     public function add(Request $request, ManagerRegistry $doctrine, SluggerInterface $slugger)
     {
         $trick = new Trick();
-        $form = $this->createForm(TrickType::class, $trick);
+
+        $form = $this->createForm(AddTrickType::class, $trick);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -95,7 +101,120 @@ class TrickController extends AbstractController
         }
 
         return $this->render('form/add-trick.html.twig', array(
-            'form' => $form->createView(),
+            'form' => $form->createView()
         ));
+    }
+
+    #[Route('/trick/edit/{id}', name: 'app_trick_edit')]
+    public function edit(Request $request, ManagerRegistry $doctrine, SluggerInterface $slugger, TrickRepository $trickRepository, $id = false)
+    {
+        $trick = $trickRepository->getTrick($id);
+
+        $images = $doctrine->getRepository(Image::class)->getImages($id);
+
+        $imageForm = $this->createForm(EditTrickImageType::class, $trick);
+        $form = $this->createForm(EditTrickType::class, $trick);
+        $videoForm = $this->createForm(EditTrickVideoType::class, $trick);
+        $removeForm = $this->createForm(RemoveTrickType::class, $trick);
+
+        $imageForm->handleRequest($request);
+        $form->handleRequest($request);
+        $videoForm->handleRequest($request);
+        $removeForm->handleRequest($request);
+
+        $entityManager = $doctrine->getManager();
+
+        if ($imageForm->isSubmitted() && $imageForm->isValid()) {
+            $imgs = $imageForm->get('image')->getData();
+
+            foreach ($imgs as $img) {
+                $originalFilename = pathinfo($img->getClientOriginalName(), PATHINFO_FILENAME);
+                // this is needed to safely include the file name as part of the URL
+                $safeFilename = $slugger->slug($originalFilename);
+                $newFilename = $safeFilename . '-' . uniqid() . '.' . $img->guessExtension();
+
+                // Move the file to the directory where images are stored
+                try {
+                    $img->move(
+                        $this->getParameter('img_directory'),
+                        $newFilename
+                    );
+                } catch (FileException $e) {
+                    // Handle exception if something happens during file upload
+                    return 'Error upload.';
+                }
+
+                $image = new Image();
+                $image->setTrick($trick);
+                $image->setUrl("/img/" . $newFilename);
+
+                $entityManager->persist($image);
+
+                $trick->setImage($image);
+                $trick->addImage($image);
+            }
+
+            $entityManager->persist($trick);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('home_page');
+        }
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $user = $doctrine->getRepository(User::class)->find(1);
+            $trick->setUser($user);
+
+            $trick->setDateUpdated($trickRepository->CurrentDate);
+
+            $entityManager->persist($trick);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('home_page');
+        }
+
+        if ($videoForm->isSubmitted() && $videoForm->isValid()) {
+            $videos = $videoForm->get('video')->getData();
+
+            $video = new Video();
+            $video->setTrick($trick);
+            $video->setUrl($videos);
+
+            $entityManager->persist($video);
+
+            $trick->setVideo($video);
+            $trick->addVideo($video);
+
+            $entityManager->persist($trick);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('home_page');
+        }
+
+        if ($removeForm->isSubmitted() && $removeForm->isValid()) {
+            $trick->setDeleted(1);
+
+            $entityManager->persist($trick);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('home_page');
+        }
+
+        return $this->render('form/edit-trick.html.twig', [
+            'trick' => $trick,
+            'images' => $images,
+            'imageForm' => $imageForm->createView(),
+            'form' => $form->createView(),
+            'videoForm' => $videoForm->createView(),
+            'removeForm' => $removeForm->createView()
+        ]);
+    }
+
+    #[Route('/trick/{id}', name: 'trick_show')]
+    public function show(int $id, TrickRepository $trickRepository, ManagerRegistry $doctrine): Response
+    {
+        $trick = $trickRepository->find($id);
+
+        dump($trick->getTitle());
+        exit;
     }
 }

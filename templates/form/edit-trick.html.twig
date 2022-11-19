@@ -1,0 +1,44 @@
+{% extends "layout.html.twig" %}
+
+{% block title %}{% if trick %}Modifier figure {{ trick.title }}{% else %}Aucun résultat{% endif %}{% endblock %}
+{% block content %}
+    {% if trick %}
+        <h3 class="text-center mt-4 mb-4">Modifier figure {{ trick.title }}</h3>
+        <div class="container-images">
+            {% for image in images %}
+                <span><a href="{{ image.url }}" target="_blank"><img src="{{ image.url }}" alt="img" /></a></span>
+            {% endfor %}
+        </div>
+        <div class="container w-25 mt-3 mb-4">
+            <div class="row">
+                <div class="mb-4">
+                    {{ form_start(imageForm) }}
+                        {{ form_row(imageForm.image) }}
+                    {{ form_end(imageForm) }}
+                </div>
+                <div class="mb-4">
+                    {{ form_start(videoForm) }}
+                        {{ form_row(videoForm.video) }}
+                    {{ form_end(videoForm) }}
+                </div>
+                {{ form_start(form) }}
+                    {{ form_row(form.category) }}
+                    <div class="trick-embed form-text mb-3 help-text">Intégrer la vidéo d'un site de streaming :
+                        Allez sur la page de la vidéo, cliquez sur "Partager" puis sélectionnez l'option "Intégrer"
+                        Collez uniquement dans le champ de saisie ci-dessous la partie contenant l'adresse de la vidéo (<u>sans les guillements</u>, comme sur cette <a href="/img/src_iframe.png" target="_blank">image</a>)
+                    </div>
+                    {{ form_row(form.title) }}
+                    {{ form_row(form.contents) }}
+                    {{ form_row(form.slug) }}
+                    {{ form_row(form.published) }}
+                {{ form_end(form) }}
+            </div>
+            <div class="removeForm text-center mt-4">
+                {{ form_start(removeForm) }}
+                {{ form_end(removeForm) }}
+            </div>
+        </div>
+    {% else %}
+        <div class="container text-center w-25 mt-3 mb-4">Aucun résultat</div>
+    {% endif %}
+{% endblock %}

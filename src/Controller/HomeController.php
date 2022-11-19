@@ -14,9 +14,10 @@ class HomeController extends AbstractController
     #[Route('/index', name: 'index_page')]
     public function home(ManagerRegistry $doctrine)
     {
-        $repository = $doctrine->getRepository(Trick::class);
+        //$repository = $doctrine->getRepository(Trick::class);
+        //$tricks = $repository->findAll();
 
-        $tricks = $repository->findAll();
+        $tricks = $doctrine->getRepository(Trick::class)->getTricks();
 
         return $this->render('home.html.twig', [
             'tricks' => $tricks

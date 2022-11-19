@@ -5,11 +5,28 @@ header {
     color: white; }
   header .container a:hover {
     color: #0a58ca; }
+  header .navbar-nav {
+    --bs-nav-link-padding-y: 0; }
 
-/* PAGE ADD-TRICK.HTML.TWIG */
+/* PAGE HOME.HTML.TWIG */
+.home table td {
+  padding: 0 0.5rem; }
+
+/* PAGE ADD-EDIT-TRICK.HTML.TWIG */
+.container-images {
+  text-align: center; }
+  .container-images span img {
+    height: 14rem;
+    max-width: 100%;
+    padding-bottom: 0.2rem;
+    object-fit: contain; }
+
 .trick-embed {
   margin-top: -0.7rem;
   white-space: pre-line; }
+
+.removeForm {
+  margin-bottom: 5rem; }
 
 footer {
   background-color: #129ce7; }

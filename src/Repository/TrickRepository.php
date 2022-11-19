@@ -41,6 +41,23 @@ class TrickRepository extends ServiceEntityRepository
         }
     }
 
+    public function getTricks()
+    {
+        $queryBuilder = $this->createQueryBuilder('t')
+            ->where('t.deleted = :deleted')
+            ->setParameter('deleted', 0);
+        return $queryBuilder->getQuery()->getResult();
+    }
+
+    public function getTrick($id)
+    {
+        $queryBuilder = $this->createQueryBuilder('t')
+            ->where('t.id = :id')
+            ->andWhere('t.deleted = 0')
+            ->setParameter('id', $id);
+        return $queryBuilder->getQuery()->setMaxResults(1)->getOneOrNullResult();
+    }
+
 //    /**
 //     * @return Trick[] Returns an array of Trick objects
 //     */
