@@ -12,7 +12,7 @@
         <table>
             {% for trick in tricks %}
                 <tr>
-                    <td>{{ trick.getTitle }}</td>
+                    <td><a href="/trick/edit/{{ trick.getSlug|e }}-{{ trick.getId }}">{{ trick.getTitle }}</a></td>
                     <td>{{ trick.getImage.getUrl }}</td>
                 </tr>
             {% endfor %}

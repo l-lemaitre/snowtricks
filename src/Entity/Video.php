@@ -6,10 +6,9 @@ use App\Repository\VideoRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: VideoRepository::class)]
-#[UniqueEntity('url')]
+#[ORM\UniqueConstraint(columns: ['trick_id', 'url'])]
 class Video
 {
     #[ORM\Id]
@@ -21,11 +20,8 @@ class Video
     #[ORM\JoinColumn(referencedColumnName: 'id_trick')]
     private ?Trick $trick = null;
 
-    #[ORM\Column(length: 255, unique: true)]
+    #[ORM\Column(length: 255)]
     private ?string $url = null;
-
-    #[ORM\OneToMany(mappedBy: 'video', targetEntity: Trick::class)]
-    private Collection $tricks;
 
     public function __construct()
     {
@@ -57,36 +53,6 @@ class Video
     public function setUrl(string $url): self
     {
         $this->url = $url;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Trick>
-     */
-    public function getTricks(): Collection
-    {
-        return $this->tricks;
-    }
-
-    public function addTrick(Trick $trick): self
-    {
-        if (!$this->tricks->contains($trick)) {
-            $this->tricks->add($trick);
-            $trick->setVideo($this);
-        }
-
-        return $this;
-    }
-
-    public function removeTrick(Trick $trick): self
-    {
-        if ($this->tricks->removeElement($trick)) {
-            // set the owning side to null (unless already changed)
-            if ($trick->getVideo() === $this) {
-                $trick->setVideo(null);
-            }
-        }
 
         return $this;
     }

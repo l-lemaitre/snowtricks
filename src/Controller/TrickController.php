@@ -11,12 +11,14 @@ use App\Form\AddTrickType;
 use App\Form\EditTrickImageType;
 use App\Form\EditTrickType;
 use App\Form\EditTrickVideoType;
+use App\Form\RemoveImageType;
 use App\Form\RemoveTrickType;
 use App\Repository\TrickRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -83,9 +85,6 @@ class TrickController extends AbstractController
                 $video->setUrl($videos);
 
                 $entityManager->persist($video);
-
-                $trick->setVideo($video);
-                $trick->addVideo($video);
             }
 
             $trick->setDeleted(0);
@@ -97,7 +96,12 @@ class TrickController extends AbstractController
             $entityManager->persist($trick);
             $entityManager->flush();
 
-            return $this->redirectToRoute('home_page');
+            $type = 'success';
+            $message = 'Enregistrement de la figure réussi.';
+
+            $this->addFlash($type, $message);
+
+            return $this->redirectToRoute('app_home_page');
         }
 
         return $this->render('form/add-trick.html.twig', array(
@@ -105,17 +109,20 @@ class TrickController extends AbstractController
         ));
     }
 
-    #[Route('/trick/edit/{id}', name: 'app_trick_edit')]
+    #[Route('/trick/edit/{slug}-{id}', name: 'app_trick_edit')]
     public function edit(Request $request, ManagerRegistry $doctrine, SluggerInterface $slugger, TrickRepository $trickRepository, $id = false)
     {
         $trick = $trickRepository->getTrick($id);
-
-        $images = $doctrine->getRepository(Image::class)->getImages($id);
-
         $imageForm = $this->createForm(EditTrickImageType::class, $trick);
         $form = $this->createForm(EditTrickType::class, $trick);
         $videoForm = $this->createForm(EditTrickVideoType::class, $trick);
         $removeForm = $this->createForm(RemoveTrickType::class, $trick);
+
+        $imageRepository = $doctrine->getRepository(Image::class);
+        $images = $imageRepository->getImages($id);
+
+        $videoRepository = $doctrine->getRepository(Video::class);
+        $videos = $videoRepository->getVideos($id);
 
         $imageForm->handleRequest($request);
         $form->handleRequest($request);
@@ -149,27 +156,16 @@ class TrickController extends AbstractController
                 $image->setUrl("/img/" . $newFilename);
 
                 $entityManager->persist($image);
-
-                $trick->setImage($image);
-                $trick->addImage($image);
             }
 
-            $entityManager->persist($trick);
             $entityManager->flush();
 
-            return $this->redirectToRoute('home_page');
-        }
+            $type = 'success';
+            $message = 'Modification de la figure réussie.';
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $user = $doctrine->getRepository(User::class)->find(1);
-            $trick->setUser($user);
+            $this->addFlash($type, $message);
 
-            $trick->setDateUpdated($trickRepository->CurrentDate);
-
-            $entityManager->persist($trick);
-            $entityManager->flush();
-
-            return $this->redirectToRoute('home_page');
+            return $this->redirectToRoute('app_home_page');
         }
 
         if ($videoForm->isSubmitted() && $videoForm->isValid()) {
@@ -181,13 +177,32 @@ class TrickController extends AbstractController
 
             $entityManager->persist($video);
 
-            $trick->setVideo($video);
-            $trick->addVideo($video);
+            $entityManager->persist($trick);
+            $entityManager->flush();
+
+            $type = 'success';
+            $message = 'Modification de la figure réussie.';
+
+            $this->addFlash($type, $message);
+
+            return $this->redirectToRoute('app_home_page');
+        }
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $user = $doctrine->getRepository(User::class)->find(1);
+            $trick->setUser($user);
+
+            $trick->setDateUpdated($trickRepository->CurrentDate);
 
             $entityManager->persist($trick);
             $entityManager->flush();
 
-            return $this->redirectToRoute('home_page');
+            $type = 'success';
+            $message = 'Modification de la figure réussie.';
+
+            $this->addFlash($type, $message);
+
+            return $this->redirectToRoute('app_index_page');
         }
 
         if ($removeForm->isSubmitted() && $removeForm->isValid()) {
@@ -196,12 +211,18 @@ class TrickController extends AbstractController
             $entityManager->persist($trick);
             $entityManager->flush();
 
-            return $this->redirectToRoute('home_page');
+            $type = 'success';
+            $message = 'Suppression de la figure réussie.';
+
+            $this->addFlash($type, $message);
+
+            return $this->redirectToRoute('app_home_page');
         }
 
         return $this->render('form/edit-trick.html.twig', [
             'trick' => $trick,
             'images' => $images,
+            'videos' => $videos,
             'imageForm' => $imageForm->createView(),
             'form' => $form->createView(),
             'videoForm' => $videoForm->createView(),
@@ -209,7 +230,7 @@ class TrickController extends AbstractController
         ]);
     }
 
-    #[Route('/trick/{id}', name: 'trick_show')]
+    #[Route('/trick/{slug}-{id}', name: 'app_trick_show')]
     public function show(int $id, TrickRepository $trickRepository, ManagerRegistry $doctrine): Response
     {
         $trick = $trickRepository->find($id);

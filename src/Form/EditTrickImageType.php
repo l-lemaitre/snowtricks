@@ -21,7 +21,7 @@ class EditTrickImageType extends AbstractType
                 'label' => 'Image(s)',
                 'mapped' => false,
                 'multiple' => true,
-                'help' => 'Formats acceptés : .gif, .jpeg, .jpg, .png, .svg',
+                'help' => 'Formats acceptés : .avif, .gif, .jpeg, .jpg, .png, .svg, .webp',
                 'constraints' => [
                     new All([
                         'constraints' => [

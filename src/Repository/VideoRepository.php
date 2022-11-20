@@ -39,6 +39,15 @@ class VideoRepository extends ServiceEntityRepository
         }
     }
 
+    public function getVideos($id)
+    {
+        $queryBuilder = $this->createQueryBuilder('v')
+            ->where('v.trick = :id')
+            ->setParameter('id', $id)
+            ->orderBy('v.id', 'ASC');
+        return $queryBuilder->getQuery()->getResult();
+    }
+
 //    /**
 //     * @return Video[] Returns an array of Video objects
 //     */
