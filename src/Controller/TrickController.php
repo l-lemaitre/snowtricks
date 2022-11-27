@@ -26,13 +26,14 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 
 class TrickController extends AbstractController
 {
+    /* Demo
     #[Route('/trick', name: 'app_trick')]
     public function index(): Response
     {
         return $this->render('trick/index.html.twig', [
             'controller_name' => 'TrickController'
         ]);
-    }
+    }*/
 
     #[Route('/trick/add', name: 'app_trick_add')]
     public function add(Request $request, ManagerRegistry $doctrine, SluggerInterface $slugger)
@@ -87,6 +88,11 @@ class TrickController extends AbstractController
                 $entityManager->persist($video);
             }
 
+            $slug = $form->get('slug')->getData();
+            $slug = strtolower($slug);
+            $slug = preg_replace('/[^a-z0-9]+/', '', $slug);
+
+            $trick->setSlug($slug);
             $trick->setDeleted(0);
 
             $trickRepository = new TrickRepository($doctrine);
@@ -110,9 +116,10 @@ class TrickController extends AbstractController
     }
 
     #[Route('/trick/edit/{slug}-{id}', name: 'app_trick_edit')]
-    public function edit(Request $request, ManagerRegistry $doctrine, SluggerInterface $slugger, TrickRepository $trickRepository, $id = false)
+    public function edit(Request $request, ManagerRegistry $doctrine, SluggerInterface $slugger, TrickRepository $trickRepository, $id)
     {
         $trick = $trickRepository->getTrick($id);
+
         $imageForm = $this->createForm(EditTrickImageType::class, $trick);
         $form = $this->createForm(EditTrickType::class, $trick);
         $videoForm = $this->createForm(EditTrickVideoType::class, $trick);
@@ -158,6 +165,7 @@ class TrickController extends AbstractController
                 $entityManager->persist($image);
             }
 
+            $entityManager->persist($trick);
             $entityManager->flush();
 
             $type = 'success';
@@ -176,7 +184,6 @@ class TrickController extends AbstractController
             $video->setUrl($videos);
 
             $entityManager->persist($video);
-
             $entityManager->persist($trick);
             $entityManager->flush();
 
@@ -190,8 +197,13 @@ class TrickController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $user = $doctrine->getRepository(User::class)->find(1);
-            $trick->setUser($user);
 
+            $slug = $form->get('slug')->getData();
+            $slug = strtolower($slug);
+            $slug = preg_replace('/[^a-z0-9]+/', '', $slug);
+
+            $trick->setUser($user);
+            $trick->setSlug($slug);
             $trick->setDateUpdated($trickRepository->CurrentDate);
 
             $entityManager->persist($trick);
@@ -207,6 +219,7 @@ class TrickController extends AbstractController
 
         if ($removeForm->isSubmitted() && $removeForm->isValid()) {
             $trick->setDeleted(1);
+            $trick->setDateUpdated($trickRepository->CurrentDate);
 
             $entityManager->persist($trick);
             $entityManager->flush();
@@ -230,12 +243,37 @@ class TrickController extends AbstractController
         ]);
     }
 
-    #[Route('/trick/{slug}-{id}', name: 'app_trick_show')]
-    public function show(int $id, TrickRepository $trickRepository, ManagerRegistry $doctrine): Response
+    #[Route('/trick/delete/{id}', name: 'app_trick_delete', methods: ['post'])]
+    public function delete(int $id, ManagerRegistry $doctrine, TrickRepository $trickRepository): Response
     {
-        $trick = $trickRepository->find($id);
+        $trick = $trickRepository->getTrick($id);
 
-        dump($trick->getTitle());
-        exit;
+        $entityManager = $doctrine->getManager();
+
+        $trick->setDeleted(1);
+        $trick->setDateUpdated($trickRepository->CurrentDate);
+
+        $entityManager->persist($trick);
+        $entityManager->flush();
+
+        return new JsonResponse(true);
+    }
+
+    #[Route('/trick/{slug}-{id}', name: 'app_trick_show')]
+    public function show($id, TrickRepository $trickRepository, ManagerRegistry $doctrine): Response
+    {
+        $trick = $trickRepository->getTrick($id);
+
+        $imageRepository = $doctrine->getRepository(Image::class);
+        $images = $imageRepository->getImages($id);
+
+        $videoRepository = $doctrine->getRepository(Video::class);
+        $videos = $videoRepository->getVideos($id);
+
+        return $this->render('trick/trick.html.twig', [
+            'trick' => $trick,
+            'images' => $images,
+            'videos' => $videos
+        ]);
     }
 }

@@ -20,18 +20,72 @@ header {
 }
 
 /* PAGE HOME.HTML.TWIG */
+.imgHome img {
+  width: 100%;
+}
+
+.imgHome + div h3 {
+  margin-bottom: 2.5rem;
+}
+
 .home {
-  table td {
-    padding: 0 0.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+
+  div {
+    width: 15rem;
+
+    a {
+      img {
+        max-height: 10rem;
+        width: 15rem;
+        padding-top: 0.5rem;
+      }
+    }
+
+    a + div {
+      display: inline-block;
+      width: 15rem;
+      margin-right: 0.2rem;
+      padding: 0 0.2rem;
+
+      text-align: center;
+
+      border: 1px solid;
+
+      span:first-child + span {
+        padding-left: 0.3rem;
+      }
+
+      span {
+        .fa-pencil, .fa-trash {
+          color: rgb(33, 37, 41);
+          transition-duration: 0.2s;
+        }
+
+        .fa-pencil:hover, .fa-trash:hover {
+          cursor: pointer;
+        }
+
+        .fa-pencil:hover {
+          color: rgb(18, 156, 231);
+        }
+
+        .fa-trash:hover {
+          color: rgb(255, 0, 0);
+        }
+      }
+    }
   }
 }
 
-/* PAGE ADD-EDIT-TRICK.HTML.TWIG */
+/* PAGE ADD/EDIT-TRICK.HTML.TWIG */
 .container-add {
   margin-bottom: 4rem;
 }
 
-h3 .fa-pencil {
+h3 .fa-pencil, h3 .fa-plus {
   height: 1.5rem;
   width: 1.5rem;
   padding-right: 0.5rem;

@@ -7,16 +7,23 @@
 {% endblock %}
 #}
 {% block content %}
-    <div class="home container p-5">
+    <div class="imgHome"><img src="/img/Snowboard-scaled.jpg" alt="imgHome" /></div>
+    <div class="container p-5">
         <h3>Liste des figures de snowboard</h3>
-        <table>
+        <div class="home mb-5">
             {% for trick in tricks %}
-                <tr>
-                    <td><a href="/trick/edit/{{ trick.getSlug|e }}-{{ trick.getId }}">{{ trick.getTitle }}</a></td>
-                    <td>{{ trick.getImage.getUrl }}</td>
-                </tr>
+                <div id="trick-{{ trick.getId }}">
+                    <a href="/trick/{{ trick.getSlug|e }}-{{ trick.getId }}">
+                        <img src="{{ trick.getImage.getUrl }}" alt="img" />
+                    </a>
+                    <div>
+                        <span><a href="/trick/{{ trick.getSlug|e }}-{{ trick.getId }}">{{ trick.getTitle }}</a></span>
+                        <span class="editImg text-center mt-4"><a href="/trick/edit/{{ trick.getSlug|e }}-{{ trick.getId }}"><i class="fa fa-pencil"></i></a></span>
+                        <span class="removeTrick text-center mt-4" data-route="{{ path('app_trick_delete', {'id':trick.getId}) }}" data-id="{{ trick.getId }}"><i class="fa fa-trash"></i></span>
+                    </div>
+                </div>
             {% endfor %}
-        </table>
+        </div>
     </div>
 {% endblock %}
 {# Used to add information to the footer in addition to that contained in the base template footer

@@ -1,0 +1,45 @@
+{% extends "layout.html.twig" %}
+
+{% block title %}{% if trick %}{{ trick.getTitle }}{% else %}Aucun résultat{% endif %}{% endblock %}
+{% block content %}
+    {% if trick %}
+        <div class="container">
+            <h3 class="text-center mt-4 mb-4">{{ trick.getTitle }}</h3>
+            <h4 class="text-center mt-4 mb-4">{{ trick.getCategory.getTitle }}</h4>
+            <div class="container-medias">
+                {% for image in images %}
+                    <div id="image-{{ image.getId }}">
+                        <span><a href="{{ image.getUrl }}" target="_blank"><img src="{{ image.getUrl }}" alt="img" /></a></span>
+                        {# <div>
+                            <div>
+                                <span class="editImg text-center mt-4"><a href="/image/edit/{{ image.getId }}"><i class="fa fa-pencil"></i></a></span>
+                                <span class="removeImg text-center mt-4" data-route="{{ path('app_image_delete', {'id':image.getId}) }}" data-id="{{ image.getId }}"><i class="fa fa-trash"></i></span>
+                            </div>
+                        </div> #}
+                    </div>
+                {% endfor %}
+            </div>
+            {% if videos %}
+                <div class="container-medias mb-5">
+                    {% for video in videos %}
+                        <div id="video-{{ video.getId }}">
+                            <iframe src="{{ video.getUrl }}" allowfullscreen></iframe>
+                            {# <div>
+                                <div>
+                                    <span class="removeVideo text-center mt-4" data-route="{{ path('app_video_delete', {'id':video.getId}) }}" data-id="{{ video.getId }}"><i class="fa fa-trash"></i></span>
+                                </div>
+                            </div> #}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            <div class="flex-column mx-auto mb-5">
+                <p>{{ trick.getContents|nl2br }}</p>
+                <p class="mt-5 text-end fw-bold name">{{ trick.getUser.getUsername }}</p>
+                <p class="text-end pb-4">le {{ trick.getDateUpdated|date("d/m/Y") }}</p>
+            </div>
+        </div>
+    {% else %}
+        <div class="container text-center w-25 mt-3 mb-4">Aucun résultat</div>
+    {% endif %}
+{% endblock %}

@@ -9,14 +9,46 @@ header {
     --bs-nav-link-padding-y: 0; }
 
 /* PAGE HOME.HTML.TWIG */
-.home table td {
-  padding: 0 0.5rem; }
+.imgHome img {
+  width: 100%; }
 
-/* PAGE ADD-EDIT-TRICK.HTML.TWIG */
+.imgHome + div h3 {
+  margin-bottom: 2.5rem; }
+
+.home {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between; }
+  .home div {
+    width: 15rem; }
+    .home div a img {
+      max-height: 10rem;
+      width: 15rem;
+      padding-top: 0.5rem; }
+    .home div a + div {
+      display: inline-block;
+      width: 15rem;
+      margin-right: 0.2rem;
+      padding: 0 0.2rem;
+      text-align: center;
+      border: 1px solid; }
+      .home div a + div span:first-child + span {
+        padding-left: 0.3rem; }
+      .home div a + div span .fa-pencil, .home div a + div span .fa-trash {
+        color: #212529;
+        transition-duration: 0.2s; }
+      .home div a + div span .fa-pencil:hover, .home div a + div span .fa-trash:hover {
+        cursor: pointer; }
+      .home div a + div span .fa-pencil:hover {
+        color: #129ce7; }
+      .home div a + div span .fa-trash:hover {
+        color: red; }
+
+/* PAGE ADD/EDIT-TRICK.HTML.TWIG */
 .container-add {
   margin-bottom: 4rem; }
 
-h3 .fa-pencil {
+h3 .fa-pencil, h3 .fa-plus {
   height: 1.5rem;
   width: 1.5rem;
   padding-right: 0.5rem;

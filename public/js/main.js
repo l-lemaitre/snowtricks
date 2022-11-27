@@ -42,6 +42,24 @@ $(document).ready(function() {
          }
       });
    });
+
+   $('.removeTrick').on('click', function(event){
+      let trickPath = $(this).data('route');
+      let trickId = $(this).data('id');
+
+      $.ajax({
+         url: trickPath,
+         type: 'POST',
+         success: function(data, status) {
+            if (data == true) {
+               $('#trick-'+trickId).remove();
+            }
+         },
+         error : function(xhr, textStatus, errorThrown) {
+            console.log('Ajax request failed.');
+         }
+      });
+   });
 });
 
 /*if(document.getElementById("resetForm")) {

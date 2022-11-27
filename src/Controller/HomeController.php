@@ -12,7 +12,7 @@ class HomeController extends AbstractController
 {
     #[Route('/', name: 'app_home_page')]
     #[Route('/index', name: 'app_index_page')]
-    public function home(Request $request, ManagerRegistry $doctrine)
+    public function home(ManagerRegistry $doctrine)
     {
         $tricks = $doctrine->getRepository(Trick::class)->getTricks();
 
