@@ -9,17 +9,84 @@ header {
     --bs-nav-link-padding-y: 0; }
 
 /* PAGE HOME.HTML.TWIG */
-.home table td {
-  padding: 0 0.5rem; }
+.imgHome img {
+  width: 100%; }
 
-/* PAGE ADD-EDIT-TRICK.HTML.TWIG */
-.container-images {
-  text-align: center; }
-  .container-images span img {
-    height: 14rem;
+.imgHome + div h3 {
+  margin-bottom: 2.5rem; }
+
+.home {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between; }
+  .home div {
+    width: 15rem; }
+    .home div a img {
+      max-height: 10rem;
+      width: 15rem;
+      padding-top: 0.5rem; }
+    .home div a + div {
+      display: inline-block;
+      width: 15rem;
+      margin-right: 0.2rem;
+      padding: 0 0.2rem;
+      text-align: center;
+      border: 1px solid; }
+      .home div a + div span:first-child + span {
+        padding-left: 0.3rem; }
+      .home div a + div span .fa-pencil, .home div a + div span .fa-trash {
+        color: #212529;
+        transition-duration: 0.2s; }
+      .home div a + div span .fa-pencil:hover, .home div a + div span .fa-trash:hover {
+        cursor: pointer; }
+      .home div a + div span .fa-pencil:hover {
+        color: #129ce7; }
+      .home div a + div span .fa-trash:hover {
+        color: red; }
+
+/* PAGE ADD/EDIT-TRICK.HTML.TWIG */
+.container-add {
+  margin-bottom: 4rem; }
+
+h3 .fa-pencil, h3 .fa-plus {
+  height: 1.5rem;
+  width: 1.5rem;
+  padding-right: 0.5rem;
+  color: #129ce7; }
+
+h3 + .container-medias {
+  margin-top: 2.4rem; }
+
+.container-medias {
+  display: flex;
+  justify-content: center;
+  text-align: right; }
+  .container-medias div div div {
+    display: inline-block;
+    margin-right: 0.2rem;
+    padding: 0 0.2rem;
+    border: 1px solid; }
+    .container-medias div div div span:first-child + span {
+      padding-left: 0.3rem; }
+    .container-medias div div div span .fa-pencil, .container-medias div div div span .fa-trash {
+      color: #212529;
+      transition-duration: 0.2s; }
+    .container-medias div div div span .fa-pencil:hover, .container-medias div div div span .fa-trash:hover {
+      cursor: pointer; }
+    .container-medias div div div span .fa-pencil:hover {
+      color: #129ce7; }
+    .container-medias div div div span .fa-trash:hover {
+      color: red; }
+  .container-medias span img {
+    height: 8rem;
     max-width: 100%;
-    padding-bottom: 0.2rem;
+    padding: 0.2rem;
     object-fit: contain; }
+  .container-medias iframe {
+    padding: 0.5rem 0.2rem 0; }
+
+hr {
+  margin-bottom: 2rem; }
 
 .trick-embed {
   margin-top: -0.7rem;

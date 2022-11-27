@@ -11,7 +11,15 @@ import './styles/app.css';
 // start the Stimulus application
 import './bootstrap';
 
-const $ = require('jquery');
 // this "modifies" the jquery module: adding behavior to it
+const $ = require('jquery');
+
+// create global $ and jQuery variables
+global.$ = global.jQuery = $;
+
 // the bootstrap module doesn't export/return anything
 require('bootstrap');
+
+// Add Fontawesome to Symfony using Webpack Encore
+require('@fortawesome/fontawesome-free/css/all.min.css');
+require('@fortawesome/fontawesome-free/js/all.js');

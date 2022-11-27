@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: TrickRepository::class)]
-#[UniqueEntity(fields: ['title', 'slug'])]
+#[UniqueEntity(fields: ['title'])]
 class Trick
 {
     #[ORM\Id]
@@ -56,10 +56,6 @@ class Trick
 
     #[ORM\OneToMany(mappedBy: 'trick', targetEntity: Video::class)]
     private Collection $videos;
-
-    #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false, referencedColumnName: 'id_video')]
-    private ?Video $video = null;
 
     public function __construct()
     {
@@ -248,18 +244,6 @@ class Trick
                 $videos->setTrick(null);
             }
         }
-
-        return $this;
-    }
-
-    public function getVideo(): ?Video
-    {
-        return $this->video;
-    }
-
-    public function setVideo(?Video $video): self
-    {
-        $this->video = $video;
 
         return $this;
     }

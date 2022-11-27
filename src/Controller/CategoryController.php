@@ -20,7 +20,7 @@ class CategoryController extends AbstractController
         ]);
     }
 
-    #[Route('/create-category', name: 'create_category')]
+    #[Route('/create-category', name: 'app_create_category')]
     public function createCategory(ManagerRegistry $doctrine, ValidatorInterface $validator): Response
     {
         $categoryRepository = new CategoryRepository($doctrine);

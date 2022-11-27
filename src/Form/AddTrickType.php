@@ -35,7 +35,7 @@ class AddTrickType extends AbstractType
                 'label' => 'Image(s)',
                 'mapped' => false,
                 'multiple' => true,
-                'help' => 'Formats acceptés : .gif, .jpeg, .jpg, .png, .svg',
+                'help' => 'Formats acceptés : .avif, .gif, .jpeg, .jpg, .png, .svg, .webp',
                 'constraints' => [
                     new All([
                         'constraints' => [
@@ -52,7 +52,7 @@ class AddTrickType extends AbstractType
                 ]
             ])
             ->add('video', TextType::class, [
-                'label' => 'Vidéo',
+                'label' => 'Vidéo(s)',
                 'mapped' => false,
                 'required' => false
             ])
@@ -76,6 +76,7 @@ class AddTrickType extends AbstractType
             ])
             ->add('slug', TextType::class, [
                 'label' => 'Permalien',
+                'help' => 'Le slug ne peut comporter de majuscules ni de caractères spéciaux.',
                 'constraints' => [
                     new NotBlank(),
                     new NotNull()

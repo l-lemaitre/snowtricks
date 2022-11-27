@@ -20,7 +20,7 @@ class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/create-user', name: 'create_user')]
+    #[Route('/create-user', name: 'app_create_user')]
     public function createUser(ManagerRegistry $doctrine, ValidatorInterface $validator): Response
     {
         $entityManager = $doctrine->getManager();
@@ -50,7 +50,7 @@ class UserController extends AbstractController
         return new Response('Saved new user with id '.$user->getId());
     }
 
-    #[Route('/user/{id}', name: 'user_show')]
+    #[Route('/user/{id}', name: 'app_user_show')]
     public function show(int $id, UserRepository $userRepository, ManagerRegistry $doctrine): Response
     {
         $user = $userRepository->find($id);
@@ -73,7 +73,7 @@ class UserController extends AbstractController
         exit;
     }
 
-    #[Route('/user/edit/{id}', name: 'user_edit')]
+    #[Route('/user/edit/{id}', name: 'app_user_edit')]
     public function update(ManagerRegistry $doctrine, int $id): Response
     {
         $entityManager = $doctrine->getManager();
