@@ -3,12 +3,15 @@
 {% block title %}Ajouter une figure{% endblock %}
 {% block content %}
     <h3 class="text-center mt-4 mb-4"><i class="fa fa-plus"></i>Ajouter une figure</h3>
-    <div class="container container-add w-25 mt-3">
+    <div class="container container-add container-videos w-25 mt-3">
         <div class="row">
             {{ form_start(form) }}
                 {{ form_row(form.category) }}
                 {{ form_row(form.image) }}
-                {{ form_row(form.video) }}
+                <ul class="videos"
+                    data-index="{{ form.video|length > 0 ? form.video|last.vars.name + 1 : 0 }}"
+                    data-prototype="{{ form_widget(form.video.vars.prototype)|e('html_attr') }}"
+                ></ul>
                 <div class="trick-embed form-text mb-3 help-text">Intégrer la vidéo d'un site de streaming :
                     Allez sur la page de la vidéo, cliquez sur "Partager" puis sélectionnez l'option "Intégrer"
                     Collez uniquement dans le champ de saisie ci-dessous la partie contenant l'adresse de la vidéo (<u>sans les guillements</u>, comme sur cette <a href="/img/src_iframe.png" target="_blank">image</a>)

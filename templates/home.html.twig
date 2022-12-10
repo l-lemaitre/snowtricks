@@ -9,12 +9,16 @@
 {% block content %}
     <div class="imgHome"><img src="/img/Snowboard-scaled.jpg" alt="imgHome" /></div>
     <div class="container p-5">
-        <h3>Liste des figures de snowboard</h3>
+        <h3 class="text-center">Liste des figures de snowboard</h3>
         <div class="home mb-5">
             {% for trick in tricks %}
                 <div id="trick-{{ trick.getId }}">
                     <a href="/trick/{{ trick.getSlug|e }}-{{ trick.getId }}">
-                        <img src="{{ trick.getImage.getUrl }}" alt="img" />
+                        {% if trick.getImage.getUrl is defined %}
+                            <img src="{{ trick.getImage.getUrl }}" alt="img" />
+                        {% else %}
+                            <img src="/img/default.jpg" alt="img" />
+                        {% endif %}
                     </a>
                     <div>
                         <span><a href="/trick/{{ trick.getSlug|e }}-{{ trick.getId }}">{{ trick.getTitle }}</a></span>

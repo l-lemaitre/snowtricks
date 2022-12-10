@@ -7,6 +7,7 @@ $(document).ready(function() {
       toastLiveExample.classList.add('show');
    }
 
+
    $('.removeImg').on('click', function(event){
       let imagePath = $(this).data('route');
       let imageId = $(this).data('id');
@@ -24,6 +25,7 @@ $(document).ready(function() {
          }
       });
    });
+
 
    $('.removeVideo').on('click', function(event){
       let videoPath = $(this).data('route');
@@ -43,6 +45,7 @@ $(document).ready(function() {
       });
    });
 
+
    $('.removeTrick').on('click', function(event){
       let trickPath = $(this).data('route');
       let trickId = $(this).data('id');
@@ -61,6 +64,37 @@ $(document).ready(function() {
       });
    });
 });
+
+
+const addVideoLink = document.createElement('a')
+addVideoLink.classList.add('add_video_list')
+addVideoLink.innerText='+ Ajouter vidéo(s)'
+addVideoLink.dataset.collectionHolderClass='videos'
+
+const newLinkLi = document.createElement('li').append(addVideoLink)
+
+const collectionHolder = document.querySelector('ul.videos')
+collectionHolder.appendChild(addVideoLink)
+
+const addFormToCollection = (e) => {
+   const collectionHolder = document.querySelector('.' + e.currentTarget.dataset.collectionHolderClass);
+
+   const item = document.createElement('li');
+
+   item.innerHTML = collectionHolder
+       .dataset
+       .prototype
+       .replace(
+           /__name__/g,
+           collectionHolder.dataset.index
+       );
+
+   collectionHolder.appendChild(item);
+
+   collectionHolder.dataset.index++;
+}
+
+addVideoLink.addEventListener("click", addFormToCollection)
 
 /*if(document.getElementById("resetForm")) {
    const resetForm = document.getElementById("resetForm");

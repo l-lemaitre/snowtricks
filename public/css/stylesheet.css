@@ -18,7 +18,7 @@ header {
 .home {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between; }
+  justify-content: space-around; }
   .home div {
     width: 15rem; }
     .home div a img {
@@ -84,6 +84,19 @@ h3 + .container-medias {
     object-fit: contain; }
   .container-medias iframe {
     padding: 0.5rem 0.2rem 0; }
+
+.container-videos {
+  max-width: 1320px; }
+  .container-videos .videos {
+    padding-left: 0;
+    list-style: none; }
+  .container-videos .add_video_list {
+    text-decoration: none;
+    cursor: pointer; }
+  .container-videos .add_video_list + li {
+    padding-top: 0.6rem; }
+  .container-videos li + li {
+    padding-top: 1rem; }
 
 hr {
   margin-bottom: 2rem; }
