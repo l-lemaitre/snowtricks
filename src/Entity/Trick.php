@@ -48,13 +48,13 @@ class Trick
     private ?User $user = null;
 
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false, referencedColumnName: 'id_image')]
+    #[ORM\JoinColumn(referencedColumnName: 'id_image')]
     private ?Image $image = null;
 
-    #[ORM\OneToMany(mappedBy: 'trick', targetEntity: Image::class)]
+    #[ORM\OneToMany(mappedBy: 'trick', targetEntity: Image::class, cascade: ['persist'])]
     private Collection $images;
 
-    #[ORM\OneToMany(mappedBy: 'trick', targetEntity: Video::class)]
+    #[ORM\OneToMany(mappedBy: 'trick', targetEntity: Video::class, cascade: ['persist'])]
     private Collection $videos;
 
     public function __construct()

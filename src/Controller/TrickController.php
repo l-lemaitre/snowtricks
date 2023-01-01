@@ -47,45 +47,49 @@ class TrickController extends AbstractController
             $user = $doctrine->getRepository(User::class)->find(1);
             $trick->setUser($user);
 
-            $imgs = $form->get('image')->getData();
-
             $entityManager = $doctrine->getManager();
 
-            foreach ($imgs as $img) {
-                $originalFilename = pathinfo($img->getClientOriginalName(), PATHINFO_FILENAME);
-                // this is needed to safely include the file name as part of the URL
-                $safeFilename = $slugger->slug($originalFilename);
-                $newFilename = $safeFilename . '-' . uniqid() . '.' . $img->guessExtension();
+            $imgs = $form->get('image')->getData();
 
-                // Move the file to the directory where images are stored
-                try {
-                    $img->move(
-                        $this->getParameter('img_directory'),
-                        $newFilename
-                    );
-                } catch (FileException $e) {
-                    // Handle exception if something happens during file upload
-                    return 'Error upload.';
+            if ($imgs) {
+                foreach ($imgs as $img) {
+                    $originalFilename = pathinfo($img->getClientOriginalName(), PATHINFO_FILENAME);
+                    // this is needed to safely include the file name as part of the URL
+                    $safeFilename = $slugger->slug($originalFilename);
+                    $newFilename = $safeFilename . '-' . uniqid() . '.' . $img->guessExtension();
+
+                    // Move the file to the directory where images are stored
+                    try {
+                        $img->move(
+                            $this->getParameter('img_directory'),
+                            $newFilename
+                        );
+                    } catch (FileException $e) {
+                        // Handle exception if something happens during file upload
+                        return 'Error upload.';
+                    }
+
+                    $image = new Image();
+                    $image->setTrick($trick);
+                    $image->setUrl("/img/" . $newFilename);
+
+                    $entityManager->persist($image);
+
+                    $trick->setImage($image);
+                    $trick->addImage($image);
                 }
-
-                $image = new Image();
-                $image->setTrick($trick);
-                $image->setUrl("/img/" . $newFilename);
-
-                $entityManager->persist($image);
-
-                $trick->setImage($image);
-                $trick->addImage($image);
             }
 
             $videos = $form->get('video')->getData();
 
             if ($videos) {
-                $video = new Video();
-                $video->setTrick($trick);
-                $video->setUrl($videos);
+                foreach ($videos as $videoUrl) {
+                    $video = new Video();
+                    $video->setTrick($trick);
+                    $video->setUrl($videoUrl);
 
-                $entityManager->persist($video);
+                    $entityManager->persist($video);
+                }
             }
 
             $slug = $form->get('slug')->getData();
@@ -179,12 +183,14 @@ class TrickController extends AbstractController
         if ($videoForm->isSubmitted() && $videoForm->isValid()) {
             $videos = $videoForm->get('video')->getData();
 
-            $video = new Video();
-            $video->setTrick($trick);
-            $video->setUrl($videos);
+            foreach ($videos as $videoUrl) {
+                $video = new Video();
+                $video->setTrick($trick);
+                $video->setUrl($videoUrl);
 
-            $entityManager->persist($video);
-            $entityManager->persist($trick);
+                $entityManager->persist($video);
+            }
+
             $entityManager->flush();
 
             $type = 'success';

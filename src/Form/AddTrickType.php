@@ -7,10 +7,12 @@ use App\Entity\Trick;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\All;
@@ -34,6 +36,7 @@ class AddTrickType extends AbstractType
             ->add('image', FileType::class, [
                 'label' => 'Image(s)',
                 'mapped' => false,
+                'required' => false,
                 'multiple' => true,
                 'help' => 'Formats acceptés : .avif, .gif, .jpeg, .jpg, .png, .svg, .webp',
                 'constraints' => [
@@ -51,10 +54,14 @@ class AddTrickType extends AbstractType
                     new NotNull()
                 ]
             ])
-            ->add('video', TextType::class, [
-                'label' => 'Vidéo(s)',
+            ->add('video', CollectionType::class, [
+                'entry_type' => UrlType::class,
+                'label' => false,
                 'mapped' => false,
-                'required' => false
+                'required' => false,
+                'allow_add' => true,
+                'by_reference' => false,
+                'allow_delete' => true
             ])
             ->add('title', TextType::class, [
                 'label' => 'Titre',

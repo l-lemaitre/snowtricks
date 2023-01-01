@@ -6,10 +6,14 @@ use App\Repository\UserRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[UniqueEntity(fields: ['username', 'email'])]
-class User
+#[UniqueEntity(fields: ['username'], message: 'There is already an account with this username')]
+class User implements UserInterface, PasswordAuthenticatedUserInterface
+//class User
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -42,6 +46,9 @@ class User
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $unsubscribe_date = null;
+
+    #[ORM\Column(type: 'boolean')]
+    private $isVerified = false;
 
     public function getId(): ?int
     {
@@ -154,5 +161,34 @@ class User
         $this->unsubscribe_date = $unsubscribe_date;
 
         return $this;
+    }
+
+    public function isVerified(): bool
+    {
+        return $this->isVerified;
+    }
+
+    public function setIsVerified(bool $isVerified): self
+    {
+        $this->isVerified = $isVerified;
+
+        return $this;
+    }
+
+    public function getRoles(): array
+    {
+        // TODO: Implement getRoles() method.
+        return [];
+    }
+
+    public function eraseCredentials()
+    {
+        // TODO: Implement eraseCredentials() method.
+    }
+
+    public function getUserIdentifier(): string
+    {
+        // TODO: Implement getUserIdentifier() method.
+        return $this->username;
     }
 }

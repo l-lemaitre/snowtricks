@@ -31,7 +31,7 @@ header {
 .home {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
+  justify-content: space-around;
 
   div {
     width: 15rem;
@@ -145,6 +145,30 @@ h3 + .container-medias {
 
   iframe {
     padding: 0.5rem 0.2rem 0;
+  }
+}
+
+.container-videos {
+  max-width: 1320px;
+
+  .videos {
+    padding-left: 0;
+
+    list-style: none;
+  }
+
+  .add_video_list {
+    text-decoration: none;
+
+    cursor: pointer;
+  }
+
+  .add_video_list + li {
+    padding-top: 0.6rem;
+  }
+
+  li + li {
+    padding-top: 1rem;
   }
 }
 
