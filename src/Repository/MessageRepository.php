@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Message;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -37,6 +38,31 @@ class MessageRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    public function getMessages($id, $currentPage)
+    {
+        $queryBuilder = $this->createQueryBuilder('m')
+            ->where('m.trick = :id')
+            ->andWhere('m.status = 2')
+            ->setParameter('id', $id)
+            ->orderBy('m.id', 'DESC')
+            ->getQuery();
+
+        $paginator = $this->paginate($queryBuilder, $currentPage);
+
+        return $paginator;
+    }
+
+    public function paginate($dql, $page, $limit = 5)
+    {
+        $paginator = new Paginator($dql);
+
+        $paginator->getQuery()
+            ->setFirstResult($limit * ($page - 1)) // Offset
+            ->setMaxResults($limit); // Limit
+
+        return $paginator;
     }
 
 //    /**

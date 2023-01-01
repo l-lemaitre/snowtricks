@@ -8,8 +8,6 @@
             <meta name="viewport" content="width=device-width, initial-scale=1.0" />
             <link href="favicon.ico" rel="icon" type="image/ico" />
             <title>SnowTricks | {% block title %}{% endblock %}</title>
-            <!-- CSS Vendor -->
-            {# <link href="/css/fontawesome-all.css" rel="stylesheet" type="text/css" /> #}
             <!-- Main CSS theme (includes Bootstrap) -->
             {% block stylesheets %}{{ encore_entry_link_tags('app') }}{% endblock %}
             <!-- Custom CSS -->
@@ -25,9 +23,22 @@
                         <div class="navbar-header col-md-3 col-lg-2">
                             <a class="navbar-brand" href="{{ path('app_home_page') }}">SnowTricks</a>
                         </div>
-                        <div class="navbar-nav text-uppercase">
-                            <li class="nav-item"><a href="/trick/add" class="nav-link">Ajouter une figure</a></li>
+                        <div class="navbar-nav text-uppercase flex-row">
+                            <li class="nav-item px-2"><a href="{{ path('app_index_page') }}" class="nav-link">Accueil</a></li>
+                            <li class="nav-item px-2"><a href="{# { path('app_category') } #}" class="nav-link">Figures</a></li>
+                            {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                                <li class="nav-item px-2"><a href="{{ path('app_trick_add') }}" class="nav-link">Ajouter une figure</a></li>
+                            {% else %}
+                                <li class="nav-item px-2"><a href="{{ path('app_login') }}" class="nav-link">Connexion</a></li>
+                                <li class="nav-item px-2"><a href="{{ path('app_register') }}" class="nav-link">Inscription</a></li>
+                            {% endif %}
                         </div>
+                        {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                            <div class="navbar-nav flex-row">
+                                    <li class="nav-item text-white">Bonjour, {{ app.user.username }} |</li>
+                                    <li class="nav-item ps-1"><a href="{{ path('app_logout') }}" class="nav-link">Déconnexion</a></li>
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
             </header>

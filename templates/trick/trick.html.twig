@@ -4,18 +4,15 @@
 {% block content %}
     {% if trick %}
         <div class="container">
+            {% if is_granted('IS_AUTHENTICATED_FULLY') and userVerified %}
+                <div class="text-end mt-3 text-uppercase"><a href="/trick/edit/{{ trick.getSlug|e }}-{{ trick.getId }}" class="nav-link"><i class="fa fa-pencil"></i>Modifier</a></div>
+            {% endif %}
             <h3 class="text-center mt-4 mb-4">{{ trick.getTitle }}</h3>
             <h4 class="text-center mt-4 mb-4">{{ trick.getCategory.getTitle }}</h4>
             <div class="container-medias">
                 {% for image in images %}
                     <div id="image-{{ image.getId }}">
                         <span><a href="{{ image.getUrl }}" target="_blank"><img src="{{ image.getUrl }}" alt="img" /></a></span>
-                        {# <div>
-                            <div>
-                                <span class="editImg text-center mt-4"><a href="/image/edit/{{ image.getId }}"><i class="fa fa-pencil"></i></a></span>
-                                <span class="removeImg text-center mt-4" data-route="{{ path('app_image_delete', {'id':image.getId}) }}" data-id="{{ image.getId }}"><i class="fa fa-trash"></i></span>
-                            </div>
-                        </div> #}
                     </div>
                 {% endfor %}
             </div>
@@ -24,11 +21,6 @@
                     {% for video in videos %}
                         <div id="video-{{ video.getId }}">
                             <iframe src="{{ video.getUrl }}" allowfullscreen></iframe>
-                            {# <div>
-                                <div>
-                                    <span class="removeVideo text-center mt-4" data-route="{{ path('app_video_delete', {'id':video.getId}) }}" data-id="{{ video.getId }}"><i class="fa fa-trash"></i></span>
-                                </div>
-                            </div> #}
                         </div>
                     {% endfor %}
                 </div>
@@ -37,6 +29,48 @@
                 <p>{{ trick.getContents|nl2br }}</p>
                 <p class="mt-5 text-end fw-bold name">{{ trick.getUser.getUsername }}</p>
                 <p class="text-end pb-4">le {{ trick.getDateUpdated|date("d/m/Y") }}</p>
+            </div>
+            <div class="containerComment">
+                <div class="d-flex justify-content-center row">
+                    <div id="comment" class="d-flex flex-column comment-section">
+                        {% for message in messages %}
+                            <div class="bg-white">
+                                <div class="d-flex flex-column justify-content-start ml-2">
+                                    <span class="d-block name">{{ message.getUser.getUsername }}</span>
+                                    <span class="text-black-50">Partagé le {% if message.getDateAdd is defined %}{{ message.getDateAdd|date("d/m/Y à H:i")|replace({':': "h"}) }}{% endif %}</span>
+                                </div>
+                                <div class="mt-2 mb-5">
+                                    <p>{{ message.getContents|nl2br }}</p>
+                                </div>
+                            </div>
+                        {% endfor %}
+                        {% if maxPages > 1 %}
+                            <ul class="pagination pagination-sm pb-4">
+                                {# `«` arrow  #}
+                                <li {{ thisPage == 1 ? 'class="disabled"' }}>
+                                    <a href="{{ path('app_trick_show', {'slug': trick.getSlug,'id': trick.getId, page: thisPage-1 < 1 ? 1 : thisPage-1, '_fragment': 'comment'}) }}">«</a>
+                                </li>
+
+                                {# Render each page number #}
+                                {% for i in 1..maxPages %}
+                                    <li {{ thisPage == i ? 'class="active"' }}>
+                                        <a href="{{ path('app_trick_show', {'slug': trick.getSlug,'id': trick.getId, page: i, '_fragment': 'comment'}) }}">{{ i }}</a>
+                                    </li>
+                                {% endfor %}
+
+                                {# `»` arrow #}
+                                <li {{ thisPage == maxPages ? 'class="disabled"' }}>
+                                    <a href="{{ path('app_trick_show', {'slug': trick.getSlug,'id': trick.getId, page: thisPage+1 <= maxPages ? thisPage+1 : thisPage, '_fragment': 'comment'}) }}">»</a>
+                                </li>
+                            </ul>
+                        {% endif %}
+                        {% if is_granted('IS_AUTHENTICATED_FULLY') and userVerified %}
+                            {{ form_start(messageForm) }}
+                                {{ form_row(messageForm.contents) }}
+                            {{ form_end(messageForm) }}
+                        {% endif %}
+                    </div>
+                </div>
             </div>
         </div>
     {% else %}

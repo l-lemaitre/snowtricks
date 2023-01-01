@@ -67,26 +67,21 @@ class AddTrickType extends AbstractType
                 'label' => 'Titre',
                 'constraints' => [
                     new NotBlank([
-                        'message' => 'Test.'
-                    ]),
-                    new NotNull([
-                        'message' => 'Test.'
+                        //'message' => 'Test.'
                     ])
                 ]
             ])
             ->add('contents', TextareaType::class, [
                 'label' => 'Contenu',
                 'constraints' => [
-                    new NotBlank(),
-                    new NotNull()
+                    new NotBlank()
                 ]
             ])
             ->add('slug', TextType::class, [
                 'label' => 'Permalien',
                 'help' => 'Le slug ne peut comporter de majuscules ni de caractères spéciaux.',
                 'constraints' => [
-                    new NotBlank(),
-                    new NotNull()
+                    new NotBlank()
                 ]
             ])
             ->add('published', ChoiceType::class, [

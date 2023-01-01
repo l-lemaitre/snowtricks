@@ -15,13 +15,14 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class ImageController extends AbstractController
 {
+    /* Demo
     #[Route('/image', name: 'app_image')]
     public function index(): Response
     {
         return $this->render('image/index.html.twig', [
             'controller_name' => 'ImageController',
         ]);
-    }
+    }*/
 
     #[Route('/create-image', name: 'app_create_image')]
     public function createImage(ManagerRegistry $doctrine, ValidatorInterface $validator): Response

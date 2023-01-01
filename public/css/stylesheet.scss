@@ -37,11 +37,20 @@ header {
     width: 15rem;
 
     a {
+      text-decoration: none;
+
+      color: rgb(33, 37, 41);
+      transition-duration: 0.2s;
+
       img {
         max-height: 10rem;
         width: 15rem;
         padding-top: 0.5rem;
       }
+    }
+
+    a:hover {
+      color: rgb(18, 156, 231);
     }
 
     a + div {
@@ -80,6 +89,27 @@ header {
   }
 }
 
+/* PAGE TRICK.HTML.TWIG */
+.container {
+  .fa-pencil {
+    height: 1rem;
+    width: 1rem;
+    padding-right: 0.5rem;
+
+    color: rgb(18, 156, 231);
+  }
+
+  a:hover {
+    color: rgb(10, 88, 202);
+  }
+
+  .pagination {
+    li {
+      padding: 0 0.5rem;
+    }
+  }
+}
+
 /* PAGE ADD/EDIT-TRICK.HTML.TWIG */
 .container-add {
   margin-bottom: 4rem;
@@ -99,6 +129,7 @@ h3 + .container-medias {
 
 .container-medias {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
 
   text-align: right;
@@ -165,6 +196,16 @@ h3 + .container-medias {
 
   .add_video_list + li {
     padding-top: 0.6rem;
+  }
+
+  .remove_video_list {
+    text-decoration: none;
+
+    cursor: pointer;
+  }
+
+  .remove_video_list + li {
+    padding-bottom: 0.6rem;
   }
 
   li + li {
