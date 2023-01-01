@@ -13,7 +13,7 @@
         <div class="home mb-5">
             {% for trick in tricks %}
                 <div id="trick-{{ trick.getId }}">
-                    <a href="/trick/{{ trick.getSlug|e }}-{{ trick.getId }}">
+                    <a href="{{ path('app_trick_show', {'slug': trick.getSlug,'id': trick.getId, 'page': 1}) }}">
                         {% if trick.getImage.getUrl is defined %}
                             <img src="{{ trick.getImage.getUrl }}" alt="img" />
                         {% else %}
@@ -21,9 +21,11 @@
                         {% endif %}
                     </a>
                     <div>
-                        <span><a href="/trick/{{ trick.getSlug|e }}-{{ trick.getId }}">{{ trick.getTitle }}</a></span>
-                        <span class="editImg text-center mt-4"><a href="/trick/edit/{{ trick.getSlug|e }}-{{ trick.getId }}"><i class="fa fa-pencil"></i></a></span>
-                        <span class="removeTrick text-center mt-4" data-route="{{ path('app_trick_delete', {'id':trick.getId}) }}" data-id="{{ trick.getId }}"><i class="fa fa-trash"></i></span>
+                        <span><a href="{{ path('app_trick_show', {'slug': trick.getSlug,'id': trick.getId, 'page': 1}) }}">{{ trick.getTitle }}</a></span>
+                        {% if is_granted('IS_AUTHENTICATED_FULLY') and userVerified %}
+                            <span class="editImg text-center mt-4"><a href="{{ path('app_trick_edit', {'slug': trick.getSlug,'id': trick.getId}) }}"><i class="fa fa-pencil"></i></a></span>
+                            <span class="removeTrick text-center mt-4" data-route="{{ path('app_trick_delete', {'id':trick.getId}) }}" data-id="{{ trick.getId }}"><i class="fa fa-trash"></i></span>
+                        {% endif %}
                     </div>
                 </div>
             {% endfor %}

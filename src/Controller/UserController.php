@@ -12,13 +12,14 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class UserController extends AbstractController
 {
+    /* Demo
     #[Route('/user', name: 'app_user')]
     public function index(): Response
     {
         return $this->render('user/index.html.twig', [
             'controller_name' => 'UserController',
         ]);
-    }
+    }*/
 
     #[Route('/create-user', name: 'app_create_user')]
     public function createUser(ManagerRegistry $doctrine, ValidatorInterface $validator): Response

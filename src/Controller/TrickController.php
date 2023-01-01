@@ -4,9 +4,12 @@ namespace App\Controller;
 
 use App\Entity\Category;
 use App\Entity\Image;
+use App\Entity\Message;
+use App\Entity\status;
 use App\Entity\Trick;
 use App\Entity\User;
 use App\Entity\Video;
+use App\Form\AddTrickMessageType;
 use App\Form\AddTrickType;
 use App\Form\EditTrickImageType;
 use App\Form\EditTrickType;
@@ -38,13 +41,15 @@ class TrickController extends AbstractController
     #[Route('/trick/add', name: 'app_trick_add')]
     public function add(Request $request, ManagerRegistry $doctrine, SluggerInterface $slugger)
     {
+        $user = $this->getUser();
+        $userVerified = $user->isIsVerified();
+
         $trick = new Trick();
 
         $form = $this->createForm(AddTrickType::class, $trick);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $user = $doctrine->getRepository(User::class)->find(1);
             $trick->setUser($user);
 
             $entityManager = $doctrine->getManager();
@@ -115,13 +120,18 @@ class TrickController extends AbstractController
         }
 
         return $this->render('form/add-trick.html.twig', array(
+            'userVerified' => $userVerified,
             'form' => $form->createView()
         ));
     }
 
     #[Route('/trick/edit/{slug}-{id}', name: 'app_trick_edit')]
-    public function edit(Request $request, ManagerRegistry $doctrine, SluggerInterface $slugger, TrickRepository $trickRepository, $id)
+    public function edit(Request $request, ManagerRegistry $doctrine, SluggerInterface $slugger, TrickRepository $trickRepository, int $id)
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        $user = $this->getUser();
+        $userVerified = $user->isIsVerified();
+
         $trick = $trickRepository->getTrick($id);
 
         $imageForm = $this->createForm(EditTrickImageType::class, $trick);
@@ -181,12 +191,20 @@ class TrickController extends AbstractController
         }
 
         if ($videoForm->isSubmitted() && $videoForm->isValid()) {
-            $videos = $videoForm->get('video')->getData();
+            $videos = $videoForm->get('video');
 
-            foreach ($videos as $videoUrl) {
+            foreach ($videos as $videoObject) {
+                $videosUrl[] = [
+                    "url" => $videoObject->get('url')->getData()
+                ];
+            }
+
+            $videosUrl = array_unique($videosUrl, SORT_REGULAR);
+
+            foreach ($videosUrl as $videoUrl) {
                 $video = new Video();
                 $video->setTrick($trick);
-                $video->setUrl($videoUrl);
+                $video->setUrl($videoUrl['url']);
 
                 $entityManager->persist($video);
             }
@@ -202,8 +220,6 @@ class TrickController extends AbstractController
         }
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $user = $doctrine->getRepository(User::class)->find(1);
-
             $slug = $form->get('slug')->getData();
             $slug = strtolower($slug);
             $slug = preg_replace('/[^a-z0-9]+/', '', $slug);
@@ -239,36 +255,53 @@ class TrickController extends AbstractController
         }
 
         return $this->render('form/edit-trick.html.twig', [
+            'userVerified' => $userVerified,
             'trick' => $trick,
             'images' => $images,
             'videos' => $videos,
-            'imageForm' => $imageForm->createView(),
             'form' => $form->createView(),
+            'imageForm' => $imageForm->createView(),
             'videoForm' => $videoForm->createView(),
             'removeForm' => $removeForm->createView()
         ]);
     }
 
     #[Route('/trick/delete/{id}', name: 'app_trick_delete', methods: ['post'])]
-    public function delete(int $id, ManagerRegistry $doctrine, TrickRepository $trickRepository): Response
+    public function delete(ManagerRegistry $doctrine, TrickRepository $trickRepository, int $id): Response
     {
-        $trick = $trickRepository->getTrick($id);
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        $user = $this->getUser();
+        $userVerified = $user->isIsVerified();
 
-        $entityManager = $doctrine->getManager();
+        if ($userVerified) {
+            $trick = $trickRepository->getTrick($id);
 
-        $trick->setDeleted(1);
-        $trick->setDateUpdated($trickRepository->CurrentDate);
+            $entityManager = $doctrine->getManager();
 
-        $entityManager->persist($trick);
-        $entityManager->flush();
+            $trick->setDeleted(1);
+            $trick->setDateUpdated($trickRepository->CurrentDate);
 
-        return new JsonResponse(true);
+            $entityManager->persist($trick);
+            $entityManager->flush();
+
+            return new JsonResponse(true);
+        } else {
+            return new JsonResponse(false);
+        }
     }
 
     #[Route('/trick/{slug}-{id}', name: 'app_trick_show')]
-    public function show($id, TrickRepository $trickRepository, ManagerRegistry $doctrine): Response
+    public function show(Request $request, ManagerRegistry $doctrine, TrickRepository $trickRepository, $slug, int $id): Response
     {
+        $user = $this->getUser();
+        if ($user) {
+            $userVerified = $user->isIsVerified();
+        } else {
+            $userVerified = false;
+        }
+
         $trick = $trickRepository->getTrick($id);
+        $page = $request->query->get('page');
 
         $imageRepository = $doctrine->getRepository(Image::class);
         $images = $imageRepository->getImages($id);
@@ -276,10 +309,59 @@ class TrickController extends AbstractController
         $videoRepository = $doctrine->getRepository(Video::class);
         $videos = $videoRepository->getVideos($id);
 
+        $messageRepository = $doctrine->getRepository(Message::class);
+        $messages = $messageRepository->getMessages($id, $page);
+
+        $limit = 5;
+        $maxPages = ceil($messages->count() / $limit);
+        $thisPage = $page;
+
+        $messageForm = $this->createForm(AddTrickMessageType::class, $trick);
+        $messageForm->handleRequest($request);
+
+        if ($messageForm->isSubmitted() && $messageForm->isValid()) {
+            $message = new Message();
+
+            $message->setUser($user);
+
+            $message->setTrick($trick);
+
+            $status = $doctrine->getRepository(Status::class)->find(2);
+            $message->setStatus($status);
+
+            $contents = $messageForm->get('contents')->getData();
+            $message->setContents($contents);
+
+            $trickRepository = new TrickRepository($doctrine);
+            $message->setDateAdd($trickRepository->CurrentDate);
+            $message->setDateUpdated($trickRepository->CurrentDate);
+
+            $entityManager = $doctrine->getManager();
+            $entityManager->persist($message);
+            $entityManager->flush();
+
+            $type = 'success';
+            $flashMessage = 'Votre message a été ajouté.';
+
+            $this->addFlash($type, $flashMessage);
+
+            return $this->redirectToRoute('app_trick_show', [
+                'slug' => $slug,
+                'id' => $id,
+                'page' => 1,
+                '_fragment' => 'comment'
+            ]);
+        }
+
         return $this->render('trick/trick.html.twig', [
+            'userVerified' => $userVerified,
             'trick' => $trick,
             'images' => $images,
-            'videos' => $videos
+            'videos' => $videos,
+            'messages' => $messages,
+            'messageForm' => $messageForm->createView(),
+            'maxPages' => $maxPages,
+            'thisPage' => $thisPage
         ]);
     }
 }
