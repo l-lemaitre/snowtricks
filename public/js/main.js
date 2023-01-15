@@ -69,17 +69,24 @@ $(document).ready(function() {
 const addVideoLink = document.createElement('a')
 addVideoLink.classList.add('add_video_list')
 addVideoLink.innerText='+ Ajouter vidéo(s)'
-addVideoLink.dataset.collectionHolderClass='videos'
+addVideoLink.dataset.collectionHolderClass='videos';
 
-const newLinkLi = document.createElement('li').append(addVideoLink)
+const removeVideoLink = document.createElement('a')
+removeVideoLink.classList.add('remove_video_list')
+removeVideoLink.innerText='- Retirer dernière vidéo'
+removeVideoLink.dataset.collectionHolderClass='videos';
+
+const newLinkLi = document.createElement('li').append(addVideoLink);
 
 const collectionHolder = document.querySelector('ul.videos')
-collectionHolder.appendChild(addVideoLink)
+collectionHolder.appendChild(addVideoLink);
 
 const addFormToCollection = (e) => {
    const collectionHolder = document.querySelector('.' + e.currentTarget.dataset.collectionHolderClass);
 
    const item = document.createElement('li');
+
+   item.classList.add('add_video');
 
    item.innerHTML = collectionHolder
        .dataset
@@ -92,19 +99,19 @@ const addFormToCollection = (e) => {
    collectionHolder.appendChild(item);
 
    collectionHolder.dataset.index++;
+
+   collectionHolder.appendChild(removeVideoLink);
 }
 
-addVideoLink.addEventListener("click", addFormToCollection)
+const removeFormToCollection = (e) => {
+   if($('.videos').children().last().prev().attr('class') == 'add_video') {
+      $('.videos').children().last().prev().remove();
+   }
 
-/*if(document.getElementById("resetForm")) {
-   const resetForm = document.getElementById("resetForm");
+   if($('.videos').children().last().prev().attr('class') != 'add_video') {
+      $('.remove_video_list').remove();
+   }
+}
 
-   resetForm.addEventListener("click", function(event) {
-      let conf = confirm("Confirmer-vous la suppression ? Cette action est irréversible.");
-
-      if(conf == true) {
-         // We validate the sending of the form
-         this.form.submit();
-      }
-   });
-}*/
+addVideoLink.addEventListener("click", addFormToCollection);
+removeVideoLink.addEventListener("click", removeFormToCollection);

@@ -12,13 +12,14 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class CategoryController extends AbstractController
 {
+    /* Demo
     #[Route('/category', name: 'app_category')]
     public function index(): Response
     {
         return $this->render('category/index.html.twig', [
             'controller_name' => 'CategoryController',
         ]);
-    }
+    }*/
 
     #[Route('/create-category', name: 'app_create_category')]
     public function createCategory(ManagerRegistry $doctrine, ValidatorInterface $validator): Response

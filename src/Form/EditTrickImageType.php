@@ -30,7 +30,7 @@ class EditTrickImageType extends AbstractType
                                 'mimeTypes' => [
                                     'image/*'
                                 ],
-                                'mimeTypesMessage' => 'Please upload a valid image file.',
+                                'mimeTypesMessage' => 'Veuillez uploader un fichier image valide.'
                             ])
                         ]
                     ]),

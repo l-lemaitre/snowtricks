@@ -2,74 +2,77 @@
 
 {% block title %}{% if trick %}Modifier figure {{ trick.getTitle }}{% else %}Aucun résultat{% endif %}{% endblock %}
 {% block content %}
-    {% if trick %}
-        <h3 class="text-center mt-4 mb-4"><i class="fa fa-pencil"></i>Modifier figure {{ trick.getTitle }}</h3>
-        <div class="container-medias">
-            {% for image in images %}
-                <div id="image-{{ image.getId }}">
-                    <span><a href="{{ image.getUrl }}" target="_blank"><img src="{{ image.getUrl }}" alt="img" /></a></span>
-                    <div>
-                        <div>
-                            <span class="editImg text-center mt-4"><a href="/image/edit/{{ image.getId }}"><i class="fa fa-pencil"></i></a></span>
-                            <span class="removeImg text-center mt-4" data-route="{{ path('app_image_delete', {'id':image.getId}) }}" data-id="{{ image.getId }}"><i class="fa fa-trash"></i></span>
-                        </div>
-                    </div>
-                </div>
-            {% endfor %}
-        </div>
-        <div class="container w-25 mt-3 mb-4">
-            <div class="row">
-                {{ form_start(imageForm) }}
-                    {{ form_row(imageForm.image) }}
-                {{ form_end(imageForm) }}
-            </div>
-        </div>
-        <hr class="w-25 mx-auto">
-        {% if videos %}
+    {% if userVerified %}
+        {% if trick %}
+            <h3 class="text-center mt-4 mb-4"><i class="fa fa-pencil"></i>Modifier figure {{ trick.getTitle }}</h3>
             <div class="container-medias">
-                {% for video in videos %}
-                    <div id="video-{{ video.getId }}">
-                        <iframe src="{{ video.getUrl }}" allowfullscreen></iframe>
+                {% for image in images %}
+                    <div id="image-{{ image.getId }}">
+                        <span><a href="{{ image.getUrl }}" target="_blank"><img src="{{ image.getUrl }}" alt="img" /></a></span>
                         <div>
                             <div>
-                                <span class="removeVideo text-center mt-4" data-route="{{ path('app_video_delete', {'id':video.getId}) }}" data-id="{{ video.getId }}"><i class="fa fa-trash"></i></span>
+                                <span class="removeImg text-center mt-4" data-route="{{ path('app_image_delete', {'id':image.getId}) }}" data-id="{{ image.getId }}"><i class="fa fa-trash"></i></span>
                             </div>
                         </div>
                     </div>
                 {% endfor %}
             </div>
+            <div class="container w-25 mt-3 mb-4">
+                <div class="row">
+                    {{ form_start(imageForm) }}
+                        {{ form_row(imageForm.image) }}
+                    {{ form_end(imageForm) }}
+                </div>
+            </div>
+            <hr class="w-25 mx-auto">
+            {% if videos %}
+                <div class="container-medias">
+                    {% for video in videos %}
+                        <div id="video-{{ video.getId }}">
+                            <iframe src="{{ video.getUrl }}" allowfullscreen></iframe>
+                            <div>
+                                <div>
+                                    <span class="removeVideo text-center mt-4" data-route="{{ path('app_video_delete', {'id':video.getId}) }}" data-id="{{ video.getId }}"><i class="fa fa-trash"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            <div class="container container-videos w-25 mt-3 mb-4">
+                <div class="row">
+                    {{ form_start(videoForm, {'attr': {'trick_id': trick.getId}}) }}
+                        <ul class="videos"
+                            data-index="{{ videoForm.video|length > 0 ? videoForm.video|last.vars.name + 1 : 0 }}"
+                            data-prototype="{{ form_widget(videoForm.video.vars.prototype)|e('html_attr') }}"
+                        ></ul>
+                        <div class="trick-embed form-text mb-3 help-text">Intégrer la vidéo d'un site de streaming :
+                            Allez sur la page de la vidéo, cliquez sur "Partager" puis sélectionnez l'option "Intégrer"
+                            Collez uniquement dans le champ de saisie ci-dessous la partie contenant l'adresse de la vidéo (<u>sans les guillements</u>, comme sur cette <a href="/img/src_iframe.png" target="_blank">image</a>)
+                        </div>
+                    {{ form_end(videoForm) }}
+                </div>
+            </div>
+            <hr class="w-25 mx-auto">
+            <div class="container w-25 mt-3 mb-4">
+                <div class="row">
+                    {{ form_start(form) }}
+                        {{ form_row(form.category) }}
+                        {{ form_row(form.title) }}
+                        {{ form_row(form.contents) }}
+                        {{ form_row(form.slug) }}
+                        {{ form_row(form.published) }}
+                    {{ form_end(form) }}
+                </div>
+                <div class="removeForm text-center mt-4">
+                    {{ form_start(removeForm) }}
+                    {{ form_end(removeForm) }}
+                </div>
+            </div>
+        {% else %}
+            <div class="container text-center w-25 mt-3 mb-4">Aucun résultat</div>
         {% endif %}
-        <div class="container container-videos w-25 mt-3 mb-4">
-            <div class="row">
-                {{ form_start(videoForm) }}
-                    <ul class="videos"
-                        data-index="{{ videoForm.video|length > 0 ? videoForm.video|last.vars.name + 1 : 0 }}"
-                        data-prototype="{{ form_widget(videoForm.video.vars.prototype)|e('html_attr') }}"
-                    ></ul>
-                    <div class="trick-embed form-text mb-3 help-text">Intégrer la vidéo d'un site de streaming :
-                        Allez sur la page de la vidéo, cliquez sur "Partager" puis sélectionnez l'option "Intégrer"
-                        Collez uniquement dans le champ de saisie ci-dessous la partie contenant l'adresse de la vidéo (<u>sans les guillements</u>, comme sur cette <a href="/img/src_iframe.png" target="_blank">image</a>)
-                    </div>
-                {{ form_end(videoForm) }}
-            </div>
-        </div>
-        <hr class="w-25 mx-auto">
-        <div class="container w-25 mt-3 mb-4">
-            <div class="row">
-                {{ form_start(form) }}
-                    {{ form_row(form.category) }}
-                    {{ form_row(form.title) }}
-                    {{ form_row(form.contents) }}
-                    {{ form_row(form.slug) }}
-                    {{ form_row(form.published) }}
-                {{ form_end(form) }}
-            </div>
-            <div class="removeForm text-center mt-4">
-                {{ form_start(removeForm) }}
-                {{ form_end(removeForm) }}
-            </div>
-        </div>
     {% else %}
-        <div class="container text-center w-25 mt-3 mb-4">Aucun résultat</div>
+        <div class="container text-center w-25 mt-3 mb-4">Vous devez activer votre compte pour accéder à cette page.</div>
     {% endif %}
 {% endblock %}

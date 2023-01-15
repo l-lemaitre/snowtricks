@@ -10,7 +10,8 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: TrickRepository::class)]
-#[UniqueEntity(fields: ['title'])]
+#[UniqueEntity(fields: ['title'], message: 'Cette valeur est déjà utilisée.')]
+#[UniqueEntity(fields: ['slug'], message: 'Cette valeur est déjà utilisée.')]
 class Trick
 {
     #[ORM\Id]
@@ -57,10 +58,14 @@ class Trick
     #[ORM\OneToMany(mappedBy: 'trick', targetEntity: Video::class, cascade: ['persist'])]
     private Collection $videos;
 
+    #[ORM\OneToMany(mappedBy: 'trick', targetEntity: Message::class, cascade: ['persist'])]
+    private Collection $messages;
+
     public function __construct()
     {
         $this->images = new ArrayCollection();
         $this->videos = new ArrayCollection();
+        $this->messages = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -242,6 +247,36 @@ class Trick
             // set the owning side to null (unless already changed)
             if ($videos->getTrick() === $this) {
                 $videos->setTrick(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Message>
+     */
+    public function getMessages(): Collection
+    {
+        return $this->messages;
+    }
+
+    public function addMessage(Message $message): self
+    {
+        if (!$this->messages->contains($message)) {
+            $this->messages->add($message);
+            $message->setTrick($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMessage(Message $message): self
+    {
+        if ($this->messages->removeElement($message)) {
+            // set the owning side to null (unless already changed)
+            if ($message->getTrick() === $this) {
+                $message->setTrick(null);
             }
         }
 
