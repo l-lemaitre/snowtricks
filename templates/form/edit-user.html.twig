@@ -1,0 +1,34 @@
+{% extends "layout.html.twig" %}
+
+{% block title %}{% if user %}Mon compte{% else %}Aucun résultat{% endif %}{% endblock %}
+{% block content %}
+    {% if userVerified %}
+        {% if user %}
+            <div class="container container-edit-user mt-3">
+                <div class="row">
+                    {{ form_start(form) }}
+                        <div class="container-medias mt-4">
+                            {% if user.getProfilePicture %}
+                                <span><a href="{{ user.getProfilePicture }}" target="_blank"><img src="{{ user.getProfilePicture }}" alt="profile-picture" /></a></span>
+                            {% endif %}
+                        </div>
+                        {{ form_row(form.profile_picture) }}
+                        {{ form_row(form.username) }}
+                        {{ form_row(form.email) }}
+                        {{ form_row(form.password) }}
+                        {{ form_row(form.lastname) }}
+                        {{ form_row(form.firstname) }}
+                    {{ form_end(form) }}
+                </div>
+                <div class="removeForm text-center mt-4">
+                    {{ form_start(removeForm) }}
+                    {{ form_end(removeForm) }}
+                </div>
+            </div>
+        {% else %}
+            <div class="container text-center mt-3 mb-4">Aucun résultat</div>
+        {% endif %}
+    {% else %}
+        <div class="container text-center mt-3 mb-4">Vous devez activer votre compte pour accéder à cette page.</div>
+    {% endif %}
+{% endblock %}

@@ -24,31 +24,22 @@ class EditTrickType extends AbstractType
                 'class' => Category::class,
                 'label' => 'Catégorie',
                 'choice_label' => 'title',
+                'empty_data' => '',
                 'constraints' => [
                     new NotNull()
                 ]
             ])
             ->add('title', TextType::class, [
                 'label' => 'Titre',
-                'constraints' => [
-                    new NotBlank([
-                        'message' => 'Test.'
-                    ]),
-                    new NotNull([
-                        'message' => 'Test.'
-                    ])
-                ]
-            ])
-            ->add('contents', TextareaType::class, [
-                'label' => 'Contenu',
+                'empty_data' => '',
                 'constraints' => [
                     new NotBlank(),
                     new NotNull()
                 ]
             ])
-            ->add('slug', TextType::class, [
-                'label' => 'Permalien',
-                'help' => 'Le slug ne peut comporter de majuscules ni de caractères spéciaux.',
+            ->add('contents', TextareaType::class, [
+                'label' => 'Contenu',
+                'empty_data' => '',
                 'constraints' => [
                     new NotBlank(),
                     new NotNull()
@@ -60,6 +51,7 @@ class EditTrickType extends AbstractType
                     'Non' => false
                 ],
                 'label' => 'Publié',
+                'empty_data' => '',
                 'constraints' => [
                     new NotNull()
                 ]

@@ -3,11 +3,17 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Form\EditUserType;
+use App\Form\RemoveUserType;
 use App\Repository\UserRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class UserController extends AbstractController
@@ -21,80 +27,88 @@ class UserController extends AbstractController
         ]);
     }*/
 
-    #[Route('/create-user', name: 'app_create_user')]
-    public function createUser(ManagerRegistry $doctrine, ValidatorInterface $validator): Response
-    {
-        $entityManager = $doctrine->getManager();
-
-        $userRepository = new UserRepository($doctrine);
-
-        $user = new User();
-        $user->setUsername('Nerofaust');
-        $user->setEmail('ludoviclemaitre@orange.fr');
-        $user->setPassword('Test');
-        $user->setLastname('Lemaître');
-        $user->setFirstname('Ludovic');
-        $user->setDeleted(0);
-        $user->setRegistrationDate($userRepository->CurrentDate);
-
-        $errors = $validator->validate($user);
-        if (count($errors) > 0) {
-            return new Response((string) $errors, 400);
-        }
-
-        // tell Doctrine you want to (eventually) save the User (no queries yet)
-        $entityManager->persist($user);
-
-        // actually executes the queries (i.e. the INSERT query)
-        $entityManager->flush();
-
-        return new Response('Saved new user with id '.$user->getId());
-    }
-
-    #[Route('/user/{id}', name: 'app_user_show')]
-    public function show(int $id, UserRepository $userRepository, ManagerRegistry $doctrine): Response
-    {
-        $user = $userRepository->find($id);
-
-
-        $repository = $doctrine->getRepository(User::class);
-
-        // look for a single User by its primary key (usually "id")
-        $user = $repository->find($id);
-
-        // look for *all* User objects
-        $users = $repository->findAll();
-
-        //return new Response('Check out this great user : '.$user->getUsername());
-
-
-        echo "<pre>";
-        dump($user);
-        //dump($users);
-        exit;
-    }
-
     #[Route('/user/edit/{id}', name: 'app_user_edit')]
-    public function update(ManagerRegistry $doctrine, int $id): Response
+    public function edit(Request $request, ManagerRegistry $doctrine, UserPasswordHasherInterface $userPasswordHasher, SluggerInterface $slugger, UserRepository $userRepository, int $id): Response
     {
-        $entityManager = $doctrine->getManager();
-        $user = $entityManager->getRepository(User::class)->find($id);
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        $user = $this->getUser();
+        $userVerified = $user->isIsVerified();
 
-        if (!$user) {
-            throw $this->createNotFoundException(
-                'No user found for id '.$id
-            );
+        $form = $this->createForm(EditUserType::class, $user);
+        $removeForm = $this->createForm(RemoveUserType::class, $user);
+
+        $form->handleRequest($request);
+        $removeForm->handleRequest($request);
+
+        $entityManager = $doctrine->getManager();
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $img = $form->get('profile_picture')->getData();
+
+            if ($img) {
+                $originalFilename = pathinfo($img->getClientOriginalName(), PATHINFO_FILENAME);
+                // this is needed to safely include the file name as part of the URL
+                $safeFilename = $slugger->slug($originalFilename);
+                $newFilename = $safeFilename . '-' . uniqid() . '.' . $img->guessExtension();
+
+                // Move the file to the directory where images are stored
+                try {
+                    $img->move(
+                        $this->getParameter('img_directory'),
+                        $newFilename
+                    );
+                } catch (FileException $e) {
+                    // Handle exception if something happens during file upload
+                    return 'Error upload.';
+                }
+
+                $user->setProfilePicture("/img/" . $newFilename);
+            }
+
+            $password = $form->get('password')->getData();
+
+            if (trim($password)) {
+                $user->setPassword(
+                    $userPasswordHasher->hashPassword(
+                        $user,
+                        $password
+                    )
+                );
+            } else {
+                $user->setPassword($user->getPassword());
+            }
+
+            $entityManager->persist($user);
+            $entityManager->flush();
+
+            $type = 'success';
+            $message = 'Modification du profil réussi.';
+
+            $this->addFlash($type, $message);
+
+            return $this->redirectToRoute('app_home_page');
         }
 
-        $user->setUsername('Nerofaust');
+        if ($removeForm->isSubmitted() && $removeForm->isValid()) {
+            $user->setDeleted(1);
+            $user->setUnsubscribeDate($userRepository->CurrentDate);
 
-        // Deleting an Object
-        //$entityManager->remove($user);
+            $entityManager->persist($user);
+            $entityManager->flush();
 
-        $entityManager->flush();
+            $type = 'success';
+            $message = 'Suppression du compte réussi.';
 
-        return $this->redirectToRoute('user_show', [
-            'id' => $user->getId()
+            $this->addFlash($type, $message);
+
+            return $this->redirectToRoute('app_logout');
+        }
+
+        return $this->render('form/edit-user.html.twig', [
+            'userVerified' => $userVerified,
+            'user' => $user,
+            'form' => $form->createView(),
+            'removeForm' => $removeForm->createView()
         ]);
     }
 }

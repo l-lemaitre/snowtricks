@@ -33,8 +33,7 @@ class EditTrickImageType extends AbstractType
                                 'mimeTypesMessage' => 'Veuillez uploader un fichier image valide.'
                             ])
                         ]
-                    ]),
-                    new NotNull()
+                    ])
                 ]
             ])
             ->add('Valider', SubmitType::class)

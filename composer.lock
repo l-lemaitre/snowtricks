@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2bf469025bf49cbe07decc4af6ac0a84",
+    "content-hash": "15edb97d67a3107ca999d1ae9b5a96f7",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -4313,71 +4313,6 @@
             "time": "2022-08-29T06:58:39+00:00"
         },
         {
-            "name": "symfony/mailgun-mailer",
-            "version": "v6.1.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/symfony/mailgun-mailer.git",
-                "reference": "44d3c15049d84f5165917a6190f06adbe64d71dd"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/symfony/mailgun-mailer/zipball/44d3c15049d84f5165917a6190f06adbe64d71dd",
-                "reference": "44d3c15049d84f5165917a6190f06adbe64d71dd",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=8.1",
-                "symfony/mailer": "^5.4|^6.0"
-            },
-            "require-dev": {
-                "symfony/http-client": "^5.4|^6.0"
-            },
-            "type": "symfony-mailer-bridge",
-            "autoload": {
-                "psr-4": {
-                    "Symfony\\Component\\Mailer\\Bridge\\Mailgun\\": ""
-                },
-                "exclude-from-classmap": [
-                    "/Tests/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
-                },
-                {
-                    "name": "Symfony Community",
-                    "homepage": "https://symfony.com/contributors"
-                }
-            ],
-            "description": "Symfony Mailgun Mailer Bridge",
-            "homepage": "https://symfony.com",
-            "support": {
-                "source": "https://github.com/symfony/mailgun-mailer/tree/v6.1.0"
-            },
-            "funding": [
-                {
-                    "url": "https://symfony.com/sponsor",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/fabpot",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
-                    "type": "tidelift"
-                }
-            ],
-            "time": "2022-04-01T07:15:35+00:00"
-        },
-        {
             "name": "symfony/messenger",
             "version": "v6.1.5",
             "source": {
@@ -7369,67 +7304,17 @@
             "time": "2022-08-02T16:17:38+00:00"
         },
         {
-            "name": "symfonycasts/reset-password-bundle",
-            "version": "v1.16.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/SymfonyCasts/reset-password-bundle.git",
-                "reference": "05216bfd80d4019a155d326501f00bf92b9cd439"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/SymfonyCasts/reset-password-bundle/zipball/05216bfd80d4019a155d326501f00bf92b9cd439",
-                "reference": "05216bfd80d4019a155d326501f00bf92b9cd439",
-                "shasum": ""
-            },
-            "require": {
-                "ext-json": "*",
-                "php": ">=7.2.5",
-                "symfony/config": "^5.4 | ^6.0",
-                "symfony/dependency-injection": "^5.4 | ^6.0",
-                "symfony/deprecation-contracts": "^2.2 | ^3.0",
-                "symfony/http-kernel": "^5.4 | ^6.0"
-            },
-            "conflict": {
-                "doctrine/orm": "<2.7",
-                "php": ">=8.1 <8.1.10"
-            },
-            "require-dev": {
-                "doctrine/doctrine-bundle": "^2.0.3",
-                "doctrine/orm": "^2.7",
-                "symfony/framework-bundle": "^5.4 | ^6.0",
-                "symfony/phpunit-bridge": "^5.4 | ^6.0",
-                "vimeo/psalm": "^4.3"
-            },
-            "type": "symfony-bundle",
-            "autoload": {
-                "psr-4": {
-                    "SymfonyCasts\\Bundle\\ResetPassword\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "description": "Symfony bundle that adds password reset functionality.",
-            "support": {
-                "issues": "https://github.com/SymfonyCasts/reset-password-bundle/issues",
-                "source": "https://github.com/SymfonyCasts/reset-password-bundle/tree/v1.16.0"
-            },
-            "time": "2022-10-04T08:38:58+00:00"
-        },
-        {
             "name": "symfonycasts/verify-email-bundle",
-            "version": "v1.12.0",
+            "version": "v1.13.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/SymfonyCasts/verify-email-bundle.git",
-                "reference": "c60349bf5a6f5e9a40bd88ec7d19b9ffd7f6af12"
+                "reference": "eb7bc997f36ad872a0d56bf209fe37fed148b0a7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/SymfonyCasts/verify-email-bundle/zipball/c60349bf5a6f5e9a40bd88ec7d19b9ffd7f6af12",
-                "reference": "c60349bf5a6f5e9a40bd88ec7d19b9ffd7f6af12",
+                "url": "https://api.github.com/repos/SymfonyCasts/verify-email-bundle/zipball/eb7bc997f36ad872a0d56bf209fe37fed148b0a7",
+                "reference": "eb7bc997f36ad872a0d56bf209fe37fed148b0a7",
                 "shasum": ""
             },
             "require": {
@@ -7461,9 +7346,9 @@
             "description": "Simple, stylish Email Verification for Symfony",
             "support": {
                 "issues": "https://github.com/SymfonyCasts/verify-email-bundle/issues",
-                "source": "https://github.com/SymfonyCasts/verify-email-bundle/tree/v1.12.0"
+                "source": "https://github.com/SymfonyCasts/verify-email-bundle/tree/v1.13.0"
             },
-            "time": "2022-10-04T08:35:54+00:00"
+            "time": "2023-01-04T12:46:15+00:00"
         },
         {
             "name": "twig/extra-bundle",

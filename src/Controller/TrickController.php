@@ -97,11 +97,11 @@ class TrickController extends AbstractController
                 }
             }
 
-            $slug = $form->get('slug')->getData();
+            $slug = $form->get('title')->getData();
             $slug = strtolower($slug);
-            $slug = preg_replace('/[^a-z0-9]+/', '', $slug);
-
+            $slug = rawurlencode($slug);
             $trick->setSlug($slug);
+
             $trick->setDeleted(0);
 
             $trickRepository = new TrickRepository($doctrine);
@@ -119,20 +119,26 @@ class TrickController extends AbstractController
             return $this->redirectToRoute('app_home_page');
         }
 
-        return $this->render('form/add-trick.html.twig', array(
+        return $this->render('form/add-trick.html.twig', [
             'userVerified' => $userVerified,
             'form' => $form->createView()
-        ));
+        ]);
     }
 
-    #[Route('/trick/edit/{slug}-{id}', name: 'app_trick_edit')]
-    public function edit(Request $request, ManagerRegistry $doctrine, SluggerInterface $slugger, TrickRepository $trickRepository, int $id)
+    #[Route('/trick/edit/{slug}', name: 'app_trick_edit')]
+    public function edit(Request $request, ManagerRegistry $doctrine, SluggerInterface $slugger, TrickRepository $trickRepository, string $slug)
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $user = $this->getUser();
         $userVerified = $user->isIsVerified();
 
-        $trick = $trickRepository->getTrick($id);
+        $trick = $trickRepository->getTrick($slug);
+
+        if ($trick) {
+            $trickId = $trick->getId();
+        } else {
+            $trickId = false;
+        }
 
         $imageForm = $this->createForm(EditTrickImageType::class, $trick);
         $form = $this->createForm(EditTrickType::class, $trick);
@@ -140,10 +146,10 @@ class TrickController extends AbstractController
         $removeForm = $this->createForm(RemoveTrickType::class, $trick);
 
         $imageRepository = $doctrine->getRepository(Image::class);
-        $images = $imageRepository->getImages($id);
+        $images = $imageRepository->getImages($trickId);
 
         $videoRepository = $doctrine->getRepository(Video::class);
-        $videos = $videoRepository->getVideos($id);
+        $videos = $videoRepository->getVideos($trickId);
 
         $imageForm->handleRequest($request);
         $form->handleRequest($request);
@@ -220,9 +226,9 @@ class TrickController extends AbstractController
         }
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $slug = $form->get('slug')->getData();
+            $slug = $form->get('title')->getData();
             $slug = strtolower($slug);
-            $slug = preg_replace('/[^a-z0-9]+/', '', $slug);
+            $slug = rawurlencode($slug);
 
             $trick->setUser($user);
             $trick->setSlug($slug);
@@ -266,15 +272,15 @@ class TrickController extends AbstractController
         ]);
     }
 
-    #[Route('/trick/delete/{id}', name: 'app_trick_delete', methods: ['post'])]
-    public function delete(ManagerRegistry $doctrine, TrickRepository $trickRepository, int $id): Response
+    #[Route('/trick/delete/{slug}', name: 'app_trick_delete', methods: ['post'])]
+    public function delete(ManagerRegistry $doctrine, TrickRepository $trickRepository, string $slug): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $user = $this->getUser();
         $userVerified = $user->isIsVerified();
 
         if ($userVerified) {
-            $trick = $trickRepository->getTrick($id);
+            $trick = $trickRepository->getTrick($slug);
 
             $entityManager = $doctrine->getManager();
 
@@ -290,8 +296,8 @@ class TrickController extends AbstractController
         }
     }
 
-    #[Route('/trick/{slug}-{id}', name: 'app_trick_show')]
-    public function show(Request $request, ManagerRegistry $doctrine, TrickRepository $trickRepository, $slug, int $id): Response
+    #[Route('/trick/{slug}', name: 'app_trick_show')]
+    public function show(Request $request, ManagerRegistry $doctrine, TrickRepository $trickRepository, string $slug): Response
     {
         $user = $this->getUser();
         if ($user) {
@@ -300,19 +306,20 @@ class TrickController extends AbstractController
             $userVerified = false;
         }
 
-        $trick = $trickRepository->getTrick($id);
+        $trick = $trickRepository->getTrick($slug);
+        $trickId = $trick->getId();
         $page = $request->query->get('page');
 
         $imageRepository = $doctrine->getRepository(Image::class);
-        $images = $imageRepository->getImages($id);
+        $images = $imageRepository->getImages($trickId);
 
         $videoRepository = $doctrine->getRepository(Video::class);
-        $videos = $videoRepository->getVideos($id);
+        $videos = $videoRepository->getVideos($trickId);
 
         $messageRepository = $doctrine->getRepository(Message::class);
-        $messages = $messageRepository->getMessages($id, $page);
+        $messages = $messageRepository->getMessages($trickId, $page);
 
-        $limit = 5;
+        $limit = 10;
         $maxPages = ceil($messages->count() / $limit);
         $thisPage = $page;
 
@@ -347,7 +354,6 @@ class TrickController extends AbstractController
 
             return $this->redirectToRoute('app_trick_show', [
                 'slug' => $slug,
-                'id' => $id,
                 'page' => 1,
                 '_fragment' => 'comment'
             ]);
@@ -355,6 +361,7 @@ class TrickController extends AbstractController
 
         return $this->render('trick/trick.html.twig', [
             'userVerified' => $userVerified,
+            'userProfilePicture' => $trick->getUser()->getProfilePicture(),
             'trick' => $trick,
             'images' => $images,
             'videos' => $videos,

@@ -28,9 +28,15 @@ security:
                 # "app_login" is the name of the route created previously
                 login_path: app_login
                 check_path: app_login
+                enable_csrf: true
 
             logout:
                 path: app_logout
+
+            custom_authenticators:
+                - App\Security\LoginFormAuthenticator
+
+            entry_point: form_login
 
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used

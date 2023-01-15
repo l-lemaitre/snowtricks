@@ -12,6 +12,7 @@ class HomeController extends AbstractController
 {
     #[Route('/', name: 'app_home_page')]
     #[Route('/index', name: 'app_index_page')]
+    #[Route('/tricks', name: 'app_tricks')]
     public function home(ManagerRegistry $doctrine)
     {
         $user = $this->getUser();

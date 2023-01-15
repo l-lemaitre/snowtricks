@@ -7,13 +7,15 @@
 {% endblock %}
 #}
 {% block content %}
-    <div class="imgHome"><img src="/img/Snowboard-scaled.jpg" alt="imgHome" /></div>
+    {% if path(app.request.attributes.get('_route')) == "/" or path(app.request.attributes.get('_route')) == "/index" %}
+        <div class="imgHome"><img src="/img/Snowboard-scaled.jpg" alt="imgHome" /></div>
+    {% endif %}
     <div class="container p-5">
         <h3 class="text-center">Liste des figures de snowboard</h3>
         <div class="home mb-5">
             {% for trick in tricks %}
                 <div id="trick-{{ trick.getId }}">
-                    <a href="{{ path('app_trick_show', {'slug': trick.getSlug,'id': trick.getId, 'page': 1}) }}">
+                    <a href="{{ path('app_trick_show', {'slug': trick.getSlug, 'page': 1}) }}">
                         {% if trick.getImage.getUrl is defined %}
                             <img src="{{ trick.getImage.getUrl }}" alt="img" />
                         {% else %}
@@ -21,10 +23,10 @@
                         {% endif %}
                     </a>
                     <div>
-                        <span><a href="{{ path('app_trick_show', {'slug': trick.getSlug,'id': trick.getId, 'page': 1}) }}">{{ trick.getTitle }}</a></span>
+                        <span><a href="{{ path('app_trick_show', {'slug': trick.getSlug, 'page': 1}) }}">{{ trick.getTitle }}</a></span>
                         {% if is_granted('IS_AUTHENTICATED_FULLY') and userVerified %}
-                            <span class="editImg text-center mt-4"><a href="{{ path('app_trick_edit', {'slug': trick.getSlug,'id': trick.getId}) }}"><i class="fa fa-pencil"></i></a></span>
-                            <span class="removeTrick text-center mt-4" data-route="{{ path('app_trick_delete', {'id':trick.getId}) }}" data-id="{{ trick.getId }}"><i class="fa fa-trash"></i></span>
+                            <span class="editImg text-center mt-4"><a href="{{ path('app_trick_edit', {'slug': trick.getSlug }) }}"><i class="fa fa-pencil"></i></a></span>
+                            <span class="removeTrick text-center mt-4" data-route="{{ path('app_trick_delete', {'slug':trick.getSlug}) }}" data-id="{{ trick.getId }}"><i class="fa fa-trash"></i></span>
                         {% endif %}
                     </div>
                 </div>
