@@ -58,13 +58,13 @@ class RegistrationController extends AbstractController
                 (new TemplatedEmail())
                     ->from(new Address('contact@llemaitre.com', 'Snowtricks'))
                     ->to($user->getEmail())
-                    ->subject('Please Confirm your Email')
+                    ->subject('Veuillez confirmer votre email')
                     ->htmlTemplate('registration/confirmation_email.html.twig')
             );
             // do anything else you need here, like send an email
 
             $type = 'success';
-            $message = 'La création de votre compte a réussie. Veuillez vérifier votre boîte e-mail pour compléter son activation.';
+            $message = 'La création de votre compte a réussie. Veuillez vérifier votre boîte e-mail pour compléter l\'activation.';
 
             $this->addFlash($type, $message);
 

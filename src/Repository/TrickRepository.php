@@ -49,12 +49,12 @@ class TrickRepository extends ServiceEntityRepository
         return $queryBuilder->getQuery()->getResult();
     }
 
-    public function getTrick($id)
+    public function getTrick($slug)
     {
         $queryBuilder = $this->createQueryBuilder('t')
-            ->where('t.id = :id')
+            ->where('t.slug = :slug')
             ->andWhere('t.deleted = 0')
-            ->setParameter('id', $id);
+            ->setParameter('slug', $slug);
         return $queryBuilder->getQuery()->setMaxResults(1)->getOneOrNullResult();
     }
 

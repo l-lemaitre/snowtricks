@@ -1,25 +1,36 @@
 {% extends "layout.html.twig" %}
 
 {% block title %}Connexion{% endblock %}
-
 {% block content %}
-    <div class="container p-5">
-        {% if error %}
-            <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-        {% endif %}
-
-        <form action="{{ path('app_login') }}" method="post">
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="_username" value="{{ last_username }}">
-
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="_password">
-
-            {# If you want to control the URL the user is redirected to on success
-            <input type="hidden" name="_target_path" value="/account"> #}
-
-            <button type="submit">login</button>
-        </form>
-        <div class="pt-5"><a href="/reset-password" class="nav-link">(Mot de passe oublié)</a></div>
+    <div class="container container-identifiers mt-5 d-flex justify-content-center">
+        <div class="col-md-4">
+            <h3><i class="fa fa-right-to-bracket"></i>Connexion</h3>
+            <form class="card px-4 py-5" action="{{ path('app_login') }}" method="post">
+                <ul class="form-data list-unstyled text-center">
+                    <li class="forms-inputs mb-4">
+                        <div class="text-start">
+                            <label for="username">Nom d'utilisateur :</label>
+                        </div>
+                        <input type="text" id="username" name="_username" value="{{ last_username }}">
+                    </li>
+                    <li class="forms-inputs mb-4">
+                        <div class="text-start">
+                            <label for="password">Mot de passe :</label>
+                        </div>
+                        <input type="password" id="password" name="_password">
+                    </li>
+                </ul>
+                {# If you want to control the URL the user is redirected to on success
+                <input type="hidden" name="_target_path" value="/account"> #}
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                <div class="text-center btn-login">
+                    <button class="btn btn-primary w-50" type="submit">Valider</button>
+                </div>
+            </form>
+            {% if error %}
+                <div class="text-danger text-center pt-2">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+            {% endif %}
+            <div class="pt-4"><a href="{{ path('app_forgotten_password') }}" class="nav-link">(Mot de passe oublié)</a></div>
+        </div>
     </div>
 {% endblock %}

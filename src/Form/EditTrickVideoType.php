@@ -30,7 +30,6 @@ class EditTrickVideoType extends AbstractType
                 ],
                 'label' => false,
                 'mapped' => false,
-                'required' => false,
                 'allow_add' => true,
                 'by_reference' => false,
                 'allow_delete' => true

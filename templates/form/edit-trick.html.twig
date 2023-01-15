@@ -17,7 +17,7 @@
                     </div>
                 {% endfor %}
             </div>
-            <div class="container w-25 mt-3 mb-4">
+            <div class="container mt-3 mb-4">
                 <div class="row">
                     {{ form_start(imageForm) }}
                         {{ form_row(imageForm.image) }}
@@ -39,7 +39,7 @@
                     {% endfor %}
                 </div>
             {% endif %}
-            <div class="container container-videos w-25 mt-3 mb-4">
+            <div class="container container-edit-videos container-videos mt-3 mb-4">
                 <div class="row">
                     {{ form_start(videoForm, {'attr': {'trick_id': trick.getId}}) }}
                         <ul class="videos"
@@ -54,13 +54,12 @@
                 </div>
             </div>
             <hr class="w-25 mx-auto">
-            <div class="container w-25 mt-3 mb-4">
+            <div class="container container-edit-trick mt-3 mb-4">
                 <div class="row">
                     {{ form_start(form) }}
                         {{ form_row(form.category) }}
                         {{ form_row(form.title) }}
                         {{ form_row(form.contents) }}
-                        {{ form_row(form.slug) }}
                         {{ form_row(form.published) }}
                     {{ form_end(form) }}
                 </div>
@@ -70,9 +69,9 @@
                 </div>
             </div>
         {% else %}
-            <div class="container text-center w-25 mt-3 mb-4">Aucun résultat</div>
+            <div class="container text-center mt-3 mb-4">Aucun résultat</div>
         {% endif %}
     {% else %}
-        <div class="container text-center w-25 mt-3 mb-4">Vous devez activer votre compte pour accéder à cette page.</div>
+        <div class="container text-center mt-3 mb-4">Vous devez activer votre compte pour accéder à cette page.</div>
     {% endif %}
 {% endblock %}

@@ -50,8 +50,7 @@ class AddTrickType extends AbstractType
                                 'mimeTypesMessage' => 'Please upload a valid image file.',
                             ])
                         ]
-                    ]),
-                    new NotNull()
+                    ])
                 ]
             ])
             ->add('video', CollectionType::class, [
@@ -73,13 +72,6 @@ class AddTrickType extends AbstractType
             ])
             ->add('contents', TextareaType::class, [
                 'label' => 'Contenu',
-                'constraints' => [
-                    new NotBlank()
-                ]
-            ])
-            ->add('slug', TextType::class, [
-                'label' => 'Permalien',
-                'help' => 'Le slug ne peut comporter de majuscules ni de caractères spéciaux.',
                 'constraints' => [
                     new NotBlank()
                 ]

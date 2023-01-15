@@ -1,10 +1,28 @@
 @charset "UTF-8";
 /* CSS GLOBAL Document */
 
+/* HEADER */
 header {
   background-color: #129ce7;
 
+  /* NAVMENU */
   .container {
+    .navbar-toggler {
+      background-color: #e9e9ed;
+    }
+
+    .navbar-toggler:hover {
+      background-color: #d0d0d7;
+    }
+
+    .navbar-collapse {
+      flex-grow: initial;
+    }
+
+    li {
+      color: rgb(255, 255, 255);
+    }
+
     a {
       color: rgb(255, 255, 255);
     }
@@ -15,7 +33,7 @@ header {
   }
 
   .navbar-nav {
-      --bs-nav-link-padding-y: 0;
+    --bs-nav-link-padding-y: 0;
   }
 }
 
@@ -24,7 +42,7 @@ header {
   width: 100%;
 }
 
-.imgHome + div h3 {
+div h3 {
   margin-bottom: 2.5rem;
 }
 
@@ -89,7 +107,40 @@ header {
   }
 }
 
+/* PAGE REGISTER/LOGIN/FORGOTTEN_PASSWORD/RESET_PASSWORD.HTML.TWIG */
+.container-identifiers {
+  margin-bottom: 6rem;
+
+  h3 .fa-right-to-bracket, h3 .fa-id-card, h3 .fa-repeat {
+    height: 1.5rem;
+    width: 1.5rem;
+    padding-right: 0.5rem;
+
+    color: rgb(18, 156, 231);
+  }
+
+  .text-start label {
+    //padding-left: 3.25rem;
+  }
+
+  .btn-login {
+    margin-top: -0.75rem;
+  }
+}
+
 /* PAGE TRICK.HTML.TWIG */
+.trick-show {
+  margin-bottom: 4rem;
+
+  .bg-white {
+    margin-bottom: 3rem;
+  }
+
+  .bg-white:last-child {
+    margin-bottom: 1.5rem;
+  }
+}
+
 .container {
   .fa-pencil {
     height: 1rem;
@@ -110,8 +161,8 @@ header {
   }
 }
 
-/* PAGE ADD/EDIT-TRICK.HTML.TWIG */
-.container-add {
+/* PAGES ADD/EDIT-TRICK/EDIT-USER.HTML.TWIG */
+.container-add, .container-edit-user {
   margin-bottom: 4rem;
 }
 
@@ -179,6 +230,10 @@ h3 + .container-medias {
   }
 }
 
+.profile-picture {
+  justify-content: initial;
+}
+
 .container-videos {
   max-width: 1320px;
 
@@ -204,12 +259,22 @@ h3 + .container-medias {
     cursor: pointer;
   }
 
-  .remove_video_list + li {
+  li {
     padding-bottom: 0.6rem;
   }
 
   li + li {
-    padding-top: 1rem;
+    padding-top: 0.4rem;
+  }
+
+  fieldset {
+    margin-bottom: initial !important;
+  }
+}
+
+.container-edit-videos {
+  li {
+    margin-bottom: -1rem;
   }
 }
 
@@ -226,6 +291,7 @@ hr {
   margin-bottom: 5rem;
 }
 
+/* FOOTER */
 footer {
   background-color: #129ce7;
 
@@ -237,5 +303,62 @@ footer {
     a {
     color: rgb(255, 255, 255);
     }
+  }
+}
+
+@media (min-width: 576px) {
+  /* PAGES ADD/EDIT-TRICK/EDIT-USER.HTML.TWIG */
+  .container-add, .container-edit-user {
+    width: 50%;
+  }
+
+  .container-medias + .container {
+    width: 50%;
+  }
+
+  .container-edit-videos {
+    width: 50%;
+  }
+
+  .container-edit-trick {
+    width: 50%;
+  }
+}
+
+@media (min-width: 992px) {
+  /* HEADER */
+  /* NAVMENU */
+  header ul + ul {
+    padding-left: 3rem !important;
+
+    .ps-1 {
+      padding-left: initial !important;
+    }
+  }
+
+  /* PAGE REGISTER/LOGIN/FORGOTTEN_PASSWORD/RESET_PASSWORD.HTML.TWIG */
+  .container-identifiers {
+    margin-bottom: 5rem;
+
+    .text-start label {
+      padding-left: 4.75rem;
+    }
+  }
+
+  /* PAGES ADD/EDIT-TRICK/EDIT-USER.HTML.TWIG */
+  .container-add, .container-edit-user {
+    width: 25%;
+  }
+
+  .container-medias + .container {
+    width: 25%;
+  }
+
+  .container-edit-videos {
+    width: 25%;
+  }
+
+  .container-edit-trick {
+    width: 25%;
   }
 }
