@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Entity\Trick;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 class HomeController extends AbstractController
@@ -18,11 +17,13 @@ class HomeController extends AbstractController
         $user = $this->getUser();
         if ($user) {
             $userVerified = $user->isIsVerified();
+
+            $tricks = $doctrine->getRepository(Trick::class)->getTricks();
         } else {
             $userVerified = false;
-        }
 
-        $tricks = $doctrine->getRepository(Trick::class)->getTricks();
+            $tricks = $doctrine->getRepository(Trick::class)->getPublishedTricks();
+        }
 
         return $this->render('home.html.twig', [
             'userVerified' => $userVerified,

@@ -14,16 +14,16 @@ class Category
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(name: 'id_category')]
-    private ?int $id = null;
+    private ?int $id;
 
     #[ORM\Column(length: 255, unique: true)]
-    private ?string $title = null;
+    private ?string $title;
 
     #[ORM\Column(length: 255, unique: true)]
-    private ?string $slug = null;
+    private ?string $slug;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $date_add = null;
+    private ?\DateTimeInterface $date_add;
 
     public function getId(): ?int
     {

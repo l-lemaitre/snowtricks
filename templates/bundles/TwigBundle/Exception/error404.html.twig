@@ -1,0 +1,10 @@
+{% extends "layout.html.twig" %}
+
+{% block title %}Page introuvable{% endblock %}
+{% block content %}
+    <h1 class="text-center my-4">Page non trouvée</h1>
+    <p class="text-center">
+        La page demandée est introuvable. Contrôlez toute erreur d'orthographe d'URL ou
+        <a href="{{ path('app_home_page') }}">revenez à la page d'accueil</a>.
+    </p>
+{% endblock %}

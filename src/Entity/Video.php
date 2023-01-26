@@ -15,14 +15,14 @@ class Video
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(name: 'id_video')]
-    private ?int $id = null;
+    private ?int $id;
 
     #[ORM\ManyToOne(inversedBy: 'videos')]
-    #[ORM\JoinColumn(referencedColumnName: 'id_trick')]
+    #[ORM\JoinColumn(referencedColumnName: 'id_trick', nullable: true)]
     private ?Trick $trick = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $url = null;
+    private ?string $url;
 
     public function __construct()
     {

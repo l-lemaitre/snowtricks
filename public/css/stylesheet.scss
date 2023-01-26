@@ -64,6 +64,7 @@ div h3 {
         max-height: 10rem;
         width: 15rem;
         padding-top: 0.5rem;
+        object-fit: cover;
       }
     }
 
@@ -232,6 +233,10 @@ h3 + .container-medias {
 
 .profile-picture {
   justify-content: initial;
+
+  span img {
+    height: 6.5rem;
+  }
 }
 
 .container-videos {

@@ -13,8 +13,8 @@ class RemoveUserType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('Supprimer', SubmitType::class, [
-                'label' => 'Supprimer le compte',
+            ->add('remove', SubmitType::class, [
+                'label' => 'Delete account',
                 'attr' => ['class' => 'btn-danger']
             ])
         ;

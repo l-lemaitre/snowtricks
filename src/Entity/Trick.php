@@ -17,39 +17,39 @@ class Trick
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(name: 'id_trick')]
-    private ?int $id = null;
+    private ?int $id;
 
     #[ORM\Column(length: 255, unique: true)]
-    private ?string $title = null;
+    private ?string $title;
 
     #[ORM\Column(type: Types::TEXT)]
-    private ?string $contents = null;
+    private ?string $contents;
 
     #[ORM\Column(length: 255, unique: true)]
-    private ?string $slug = null;
+    private ?string $slug;
 
     #[ORM\Column(type: Types::SMALLINT)]
-    private ?int $published = null;
+    private ?int $published;
 
-    #[ORM\Column(type: Types::SMALLINT)]
+    #[ORM\Column(type: Types::SMALLINT, options: ["default" => 0])]
     private ?int $deleted = 0;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $date_add = null;
+    private ?\DateTimeInterface $date_add;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $date_updated = null;
+    private ?\DateTimeInterface $date_updated;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false, referencedColumnName: 'id_category')]
-    private ?Category $category = null;
+    private ?Category $category;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false, referencedColumnName: 'id_user')]
-    private ?User $user = null;
+    private ?User $user;
 
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(referencedColumnName: 'id_image')]
+    #[ORM\JoinColumn(referencedColumnName: 'id_image', nullable: true, onDelete: 'set null')]
     private ?Image $image = null;
 
     #[ORM\OneToMany(mappedBy: 'trick', targetEntity: Image::class, cascade: ['persist'])]

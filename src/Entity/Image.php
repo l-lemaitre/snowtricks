@@ -13,13 +13,13 @@ class Image
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(name: 'id_image')]
-    private ?int $id = null;
+    private ?int $id;
 
     #[ORM\Column(length: 255, unique: true)]
-    private ?string $url = null;
+    private ?string $url;
 
     #[ORM\ManyToOne(inversedBy: 'images')]
-    #[ORM\JoinColumn(referencedColumnName: 'id_trick')]
+    #[ORM\JoinColumn(referencedColumnName: 'id_trick', onDelete: 'set null')]
     private ?Trick $trick = null;
 
     public function getId(): ?int

@@ -20,7 +20,8 @@ class UserRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, User::class);
 
-        $this->CurrentDate = new \DateTime();
+        date_default_timezone_set('Europe/Paris');
+        $this->currentDate = new \DateTime();
     }
 
     public function save(User $entity, bool $flush = false): void
@@ -45,33 +46,9 @@ class UserRepository extends ServiceEntityRepository
     {
         $queryBuilder = $this->createQueryBuilder('u')
             ->where('u.username = :username')
-            ->andWhere('u.deleted = 0')
-            ->setParameter('username', $username);
+            ->andWhere('u.deleted = :deleted')
+            ->setParameter('username', $username)
+            ->setParameter('deleted', 0);
         return $queryBuilder->getQuery()->setMaxResults(1)->getOneOrNullResult();
     }
-
-//    /**
-//     * @return User[] Returns an array of User objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('u')
-//            ->andWhere('u.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('u.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?User
-//    {
-//        return $this->createQueryBuilder('u')
-//            ->andWhere('u.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
 }

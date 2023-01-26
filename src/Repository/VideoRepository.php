@@ -39,37 +39,18 @@ class VideoRepository extends ServiceEntityRepository
         }
     }
 
-    public function getVideos($id)
+    public function getVideos($slug)
     {
         $queryBuilder = $this->createQueryBuilder('v')
-            ->where('v.trick = :id')
-            ->setParameter('id', $id)
+            ->leftJoin(
+                'App\Entity\Trick',
+                't',
+                'WITH',
+                't.slug = :slug'
+            )
+            ->where('v.trick = t.id')
+            ->setParameter('slug', $slug)
             ->orderBy('v.id', 'ASC');
         return $queryBuilder->getQuery()->getResult();
     }
-
-//    /**
-//     * @return Video[] Returns an array of Video objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('v')
-//            ->andWhere('v.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('v.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?Video
-//    {
-//        return $this->createQueryBuilder('v')
-//            ->andWhere('v.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
 }

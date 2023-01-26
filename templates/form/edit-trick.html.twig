@@ -4,7 +4,7 @@
 {% block content %}
     {% if userVerified %}
         {% if trick %}
-            <h3 class="text-center mt-4 mb-4"><i class="fa fa-pencil"></i>Modifier figure {{ trick.getTitle }}</h3>
+            <h3 class="text-center my-4"><i class="fa fa-pencil"></i>Modifier figure {{ trick.getTitle }}</h3>
             <div class="container-medias">
                 {% for image in images %}
                     <div id="image-{{ image.getId }}">

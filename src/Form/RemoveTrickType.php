@@ -13,7 +13,7 @@ class RemoveTrickType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('Supprimer', SubmitType::class, [
+            ->add('remove', SubmitType::class, [
                 'attr' => ['class' => 'btn-danger']
             ])
         ;

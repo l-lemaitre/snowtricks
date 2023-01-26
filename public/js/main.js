@@ -78,7 +78,7 @@ $(document).ready(function() {
 });
 
 
-$(document).on('click', '#remove_trick_Supprimer', function(e) {
+$(document).on('click', '#remove_trick_remove', function(e) {
    e.preventDefault();
 
    if (confirm('Confirmer-vous la suppression ? Cette action est irréversible.')) {
@@ -87,7 +87,7 @@ $(document).on('click', '#remove_trick_Supprimer', function(e) {
 });
 
 
-$(document).on('click', '#remove_user_Supprimer', function(e) {
+$(document).on('click', '#remove_user_remove', function(e) {
    e.preventDefault();
 
    if (confirm('Confirmer-vous la suppression ? Cette action est irréversible.')) {
@@ -96,7 +96,7 @@ $(document).on('click', '#remove_user_Supprimer', function(e) {
 });
 
 
-$(document).on('click', '#edit_trick_video_Valider', function(e) {
+$(document).on('click', '#edit_trick_video_validate', function(e) {
    if (!$('li').hasClass('add_video') && $('#edit_trick_video_video_0_url').length == 0) {
       e.preventDefault();
       alert('Veuillez ajouter au moins une vidéo.');

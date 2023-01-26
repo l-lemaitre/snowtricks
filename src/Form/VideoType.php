@@ -34,8 +34,8 @@ class VideoType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $trick_id = $this->requestStack->getCurrentRequest()->attributes->get('id');
-        $videos = $this->videoRepository->getVideos($trick_id);
+        $trick_slug = $this->requestStack->getCurrentRequest()->attributes->get('slug');
+        $videos = $this->videoRepository->getVideos($trick_slug);
 
         $builder
             ->add('url', UrlType::class, [
@@ -47,7 +47,7 @@ class VideoType extends AbstractType
                             foreach ($videos as $video) {
                                 if ($value == $video->getUrl()) {
                                     $context
-                                        ->buildViolation("Cette vidéo existe déjà pour cette figure.")
+                                        ->buildViolation('This video already exists for this figure.')
                                         ->addViolation();
                                 }
                             }

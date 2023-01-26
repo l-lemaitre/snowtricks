@@ -34,7 +34,7 @@ class EditTrickVideoType extends AbstractType
                 'by_reference' => false,
                 'allow_delete' => true
             ])
-            ->add('Valider', SubmitType::class)
+            ->add('validate', SubmitType::class)
         ;
     }
 

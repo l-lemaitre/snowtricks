@@ -12,28 +12,24 @@ class Message
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(name: 'id_message')]
-    private ?int $id = null;
+    private ?int $id;
 
     #[ORM\Column(type: Types::TEXT)]
-    private ?string $contents = null;
+    private ?string $contents;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $date_add = null;
+    private ?\DateTimeInterface $date_add;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $date_updated = null;
+    private ?\DateTimeInterface $date_updated;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false, referencedColumnName: 'id_user')]
-    private ?User $user = null;
+    private ?User $user;
 
-    #[ORM\ManyToOne]
+    #[ORM\ManyToOne(inversedBy: 'messages')]
     #[ORM\JoinColumn(nullable: false, referencedColumnName: 'id_trick')]
-    private ?Trick $trick = null;
-
-    #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false, referencedColumnName: 'id_status')]
-    private ?Status $status = null;
+    private ?Trick $trick;
 
     public function getId(): ?int
     {
@@ -96,18 +92,6 @@ class Message
     public function setTrick(?Trick $trick): self
     {
         $this->trick = $trick;
-
-        return $this;
-    }
-
-    public function getStatus(): ?Status
-    {
-        return $this->status;
-    }
-
-    public function setStatus(?Status $status): self
-    {
-        $this->status = $status;
 
         return $this;
     }

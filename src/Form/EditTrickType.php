@@ -22,7 +22,7 @@ class EditTrickType extends AbstractType
         $builder
             ->add('category', EntityType::class, [
                 'class' => Category::class,
-                'label' => 'Catégorie',
+                'label' => 'Category',
                 'choice_label' => 'title',
                 'empty_data' => '',
                 'constraints' => [
@@ -30,7 +30,7 @@ class EditTrickType extends AbstractType
                 ]
             ])
             ->add('title', TextType::class, [
-                'label' => 'Titre',
+                'label' => 'Title',
                 'empty_data' => '',
                 'constraints' => [
                     new NotBlank(),
@@ -38,7 +38,7 @@ class EditTrickType extends AbstractType
                 ]
             ])
             ->add('contents', TextareaType::class, [
-                'label' => 'Contenu',
+                'label' => 'Contents',
                 'empty_data' => '',
                 'constraints' => [
                     new NotBlank(),
@@ -47,16 +47,16 @@ class EditTrickType extends AbstractType
             ])
             ->add('published', ChoiceType::class, [
                 'choices'  => [
-                    'Oui' => true,
-                    'Non' => false
+                    'Yes' => true,
+                    'No' => false
                 ],
-                'label' => 'Publié',
+                'label' => 'Published',
                 'empty_data' => '',
                 'constraints' => [
                     new NotNull()
                 ]
             ])
-            ->add('Valider', SubmitType::class)
+            ->add('validate', SubmitType::class)
         ;
     }
 

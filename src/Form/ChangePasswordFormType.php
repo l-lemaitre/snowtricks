@@ -9,6 +9,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\NotNull;
+use Symfony\Component\Validator\Constraints\Regex;
 
 class ChangePasswordFormType extends AbstractType
 {
@@ -23,25 +25,32 @@ class ChangePasswordFormType extends AbstractType
                     ]
                 ],
                 'first_options' => [
-                    'label' => 'Nouveau mot de passe',
+                    'label' => 'New Password',
                     'constraints' => [
                         new NotBlank([
-                            'message' => 'Veuillez entrer un mot de passe.'
+                            'message' => 'Please enter a password.'
                         ]),
+                        new NotNull(),
                         new Length([
                             'min' => 6,
-                            'minMessage' => 'Votre mot de passe doit comporter au moins {{ limit }} caractères.',
+                            'minMessage' => 'Your password must be at least {{ limit }} characters long.',
                             // max length allowed by Symfony for security reasons
                             'max' => 4096
+                        ]),
+                        new Regex([
+                            'pattern' => '/^[0-9A-Za-z]{8,}$/',
+                            'message' => 'The Password is invalid. It must contain at least 8 alphanumeric characters and contain no accents or special characters.'
                         ])
                     ]
                 ],
                 'second_options' => [
-                    'label' => 'Confirmer le nouveau mot de passe'
+                    'label' => 'Confirm the new password',
+                    'constraints' => [
+                        new NotBlank(),
+                        new NotNull()
+                    ]
                 ],
-                'invalid_message' => 'Les champs de mot de passe doivent correspondre.',
-                // Instead of being set onto the object directly,
-                // this is read and encoded in the controller
+                'invalid_message' => 'Password fields must match.',
                 'mapped' => false
             ])
         ;
