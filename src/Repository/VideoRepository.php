@@ -39,7 +39,7 @@ class VideoRepository extends ServiceEntityRepository
         }
     }
 
-    public function getVideos($slug)
+    public function getVideos(string $slug): array
     {
         $queryBuilder = $this->createQueryBuilder('v')
             ->leftJoin(

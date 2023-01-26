@@ -2,11 +2,14 @@
 
 namespace App\Service;
 
+use App\Entity\Trick;
 use App\Entity\Video;
+use Doctrine\Persistence\ObjectManager;
+use Symfony\Component\Form\Form;
 
 class VideoService
 {
-    public function addTrickVideo($entityManager, $trick, $videos, $editTrick = false)
+    public function addTrickVideo(ObjectManager $entityManager, Trick $trick, object $videos, bool $editTrick = false): void
     {
         if ($editTrick) {
             foreach ($videos as $videoObject) {

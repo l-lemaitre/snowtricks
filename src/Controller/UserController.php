@@ -44,7 +44,7 @@ class UserController extends AbstractController
 
             $password = $form->get('password')->getData();
 
-            $editUser = $userService->editUser($entityManager, $user, $password, $userPasswordHasher);
+            $editUser = $userService->editUser($entityManager, $user, $userPasswordHasher, $password);
 
             $type = 'success';
             $message = 'Modification du profil réussi.';

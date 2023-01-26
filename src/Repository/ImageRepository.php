@@ -39,7 +39,7 @@ class ImageRepository extends ServiceEntityRepository
         }
     }
 
-    public function getImages($id)
+    public function getImages(int $id): array
     {
         $queryBuilder = $this->createQueryBuilder('i')
             ->where('i.trick = :id')

@@ -1,0 +1,10 @@
+{% extends "layout.html.twig" %}
+
+{% block title %}Page introuvable{% endblock %}
+{% block content %}
+    <h1 class="text-center my-4">Erreur 500</h1>
+    <p class="text-center">
+        Quelque chose est cassé. Désolé pour la gêne occasionnée.
+        <a href="{{ path('app_home_page') }}">Revenir à la page d'accueil</a>.
+    </p>
+{% endblock %}

@@ -3,10 +3,13 @@
 namespace App\Service;
 
 use App\Entity\Message;
+use App\Entity\Trick;
+use App\Entity\User;
+use Doctrine\Persistence\ObjectManager;
 
 class MessageService
 {
-    public function addMessage($entityManager, $trick, $user, $contents, $currentDate)
+    public function addMessage(ObjectManager $entityManager, Trick $trick, User $user, string $contents, \datetime $currentDate): void
     {
         $message = new Message();
 

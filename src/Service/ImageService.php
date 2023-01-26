@@ -3,11 +3,16 @@
 namespace App\Service;
 
 use App\Entity\Image;
+use App\Entity\Trick;
+use App\Entity\User;
+use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 class ImageService
 {
-    public function addTrickImage($entityManager, $slugger, $trick, $imgs, $imgDirectory)
+    public function addTrickImage(ObjectManager $entityManager, SluggerInterface $slugger, Trick $trick, array $imgs,string $imgDirectory): bool
     {
         foreach ($imgs as $img) {
             $originalFilename = pathinfo($img->getClientOriginalName(), PATHINFO_FILENAME);
@@ -35,9 +40,11 @@ class ImageService
             $trick->setImage($image);
             $trick->addImage($image);
         }
+
+        return true;
     }
 
-    public function addProfilePicture($slugger, $user, $img, $imgDirectory)
+    public function addProfilePicture(SluggerInterface $slugger, User $user, UploadedFile $img, string $imgDirectory): bool
     {
         $originalFilename = pathinfo($img->getClientOriginalName(), PATHINFO_FILENAME);
         // this is needed to safely include the file name as part of the URL
@@ -56,5 +63,7 @@ class ImageService
         }
 
         $user->setProfilePicture("/img/" . $newFilename);
+
+        return true;
     }
 }

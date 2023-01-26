@@ -32,7 +32,7 @@ class VideoType extends AbstractType
         $this->videoRepository = $videoRepository;
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $trick_slug = $this->requestStack->getCurrentRequest()->attributes->get('slug');
         $videos = $this->videoRepository->getVideos($trick_slug);
@@ -58,7 +58,7 @@ class VideoType extends AbstractType
         ;
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Video::class

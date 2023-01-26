@@ -2,9 +2,13 @@
 
 namespace App\Service;
 
+use App\Entity\User;
+use Doctrine\Persistence\ObjectManager;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+
 class UserService
 {
-    public function editUser($entityManager, $user, $password, $userPasswordHasher)
+    public function editUser(ObjectManager $entityManager, User $user, UserPasswordHasherInterface $userPasswordHasher, string $password = null): void
     {
         if (trim($password)) {
             $user->setPassword(
@@ -21,7 +25,7 @@ class UserService
         $entityManager->flush();
     }
 
-    public function removeUser($entityManager, $user, $currentDate)
+    public function removeUser(ObjectManager $entityManager, User $user, \Datetime $currentDate): void
     {
         $user->setDeleted(1);
         $user->setUnsubscribeDate($currentDate);

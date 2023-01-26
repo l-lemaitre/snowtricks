@@ -42,7 +42,7 @@ class TrickRepository extends ServiceEntityRepository
         }
     }
 
-    public function getTricks()
+    public function getTricks(): array
     {
         $queryBuilder = $this->createQueryBuilder('t')
             ->where('t.deleted = :deleted')
@@ -50,7 +50,7 @@ class TrickRepository extends ServiceEntityRepository
         return $queryBuilder->getQuery()->getResult();
     }
 
-    public function getPublishedTricks()
+    public function getPublishedTricks(): array
     {
         $queryBuilder = $this->createQueryBuilder('t')
             ->where('t.published = :published')
@@ -60,7 +60,7 @@ class TrickRepository extends ServiceEntityRepository
         return $queryBuilder->getQuery()->getResult();
     }
 
-    public function getTrick($slug)
+    public function getTrick(string $slug): Trick
     {
         $queryBuilder = $this->createQueryBuilder('t')
             ->where('t.slug = :slug')
@@ -70,7 +70,7 @@ class TrickRepository extends ServiceEntityRepository
         return $queryBuilder->getQuery()->setMaxResults(1)->getOneOrNullResult();
     }
 
-    public function getPublishedTrick($slug)
+    public function getPublishedTrick(string $slug): Trick
     {
         $queryBuilder = $this->createQueryBuilder('t')
             ->where('t.slug = :slug')

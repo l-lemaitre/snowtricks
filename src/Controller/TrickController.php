@@ -47,7 +47,7 @@ class TrickController extends AbstractController
     }
 
     #[Route('/trick/add', name: 'app_trick_add')]
-    public function add(Request $request, ManagerRegistry $doctrine, SluggerInterface $slugger)
+    public function add(Request $request, ManagerRegistry $doctrine, SluggerInterface $slugger): Response
     {
         $user = $this->getUser();
         $userVerified = $user->isIsVerified();
@@ -93,7 +93,7 @@ class TrickController extends AbstractController
     }
 
     #[Route('/trick/edit/{slug}', name: 'app_trick_edit')]
-    public function edit(Request $request, ManagerRegistry $doctrine, SluggerInterface $slugger, string $slug)
+    public function edit(Request $request, ManagerRegistry $doctrine, SluggerInterface $slugger, string $slug): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $user = $this->getUser();
