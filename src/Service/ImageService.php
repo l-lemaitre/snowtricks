@@ -6,7 +6,6 @@ use App\Entity\Image;
 use App\Entity\Trick;
 use App\Entity\User;
 use Doctrine\Persistence\ObjectManager;
-use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
@@ -21,15 +20,7 @@ class ImageService
             $newFilename = $safeFilename . '-' . uniqid() . '.' . $img->guessExtension();
 
             // Move the file to the directory where images are stored
-            try {
-                $img->move(
-                    $imgDirectory,
-                    $newFilename
-                );
-            } catch (FileException $e) {
-                // Handle exception if something happens during file upload
-                return 'Error upload.';
-            }
+            $img->move($imgDirectory, $newFilename);
 
             $image = new Image();
             $image->setTrick($trick);
@@ -47,20 +38,10 @@ class ImageService
     public function addProfilePicture(SluggerInterface $slugger, User $user, UploadedFile $img, string $imgDirectory): bool
     {
         $originalFilename = pathinfo($img->getClientOriginalName(), PATHINFO_FILENAME);
-        // this is needed to safely include the file name as part of the URL
         $safeFilename = $slugger->slug($originalFilename);
         $newFilename = $safeFilename . '-' . uniqid() . '.' . $img->guessExtension();
 
-        // Move the file to the directory where images are stored
-        try {
-            $img->move(
-                $imgDirectory,
-                $newFilename
-            );
-        } catch (FileException $e) {
-            // Handle exception if something happens during file upload
-            return 'Error upload.';
-        }
+        $img->move($imgDirectory, $newFilename);
 
         $user->setProfilePicture("/img/" . $newFilename);
 

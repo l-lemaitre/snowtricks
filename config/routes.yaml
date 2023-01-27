@@ -2,7 +2,67 @@ controllers:
     resource: ../src/Controller/
     type: attribute
 
+app_forgotten_password:
+    path: /forgotten-password
+    controller: App\Controller\SecurityController::forgottenPassword
+    methods: GET
+
+app_home_page:
+    path: /
+    controller: App\Controller\HomeController::home
+    methods: GET
+
+app_index_page:
+    path: /index
+    controller: App\Controller\HomeController::home
+    methods: GET
+
+app_login:
+    path: /login
+    controller: App\Controller\LoginController::index
+    methods: GET
+
+app_mailer_sendemail:
+    path: /email
+    controller: App\Controller\MailerController::sendEmail
+    methods: GET
+
 app_register:
     path: /register
     controller: App\Controller\RegistrationController::register
+    methods: GET
+
+app_reset_password:
+    path: /reset-password/{token}
+    controller: App\Controller\SecurityController::resetPassword
+    methods: GET
+
+app_trick_add:
+    path: /trick/add
+    controller: App\Controller\TrickController::add
+    methods: GET
+
+app_trick_edit:
+    path: /trick/edit/{slug}
+    controller: App\Controller\TrickController::edit
+    methods: GET
+
+app_trick_show:
+    path: /trick/{slug}
+    controller: App\Controller\TrickController::show
+    methods: GET
+
+app_tricks:
+    path: /tricks
+    controller: App\Controller\HomeController::home
+    methods: GET
+
+app_user_edit:
+    path: /user/edit/{id}
+    controller: App\Controller\UserController::edit
+    methods: GET
+
+app_verify_email:
+    path: /verify/email
+    controller: App\Controller\RegistrationController::verifyUserEmail
     methods: GET
