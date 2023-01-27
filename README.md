@@ -4,7 +4,7 @@ Project 6 of the formation [Application Developer - PHP/Symfony of OpenClassroom
 
 Instructions for installing the project :<br>
 Download the latest version available of the main branch and copy the files to the root of your working directory.<br>
-Run the commande composer update.<br>
+Run the command composer update.<br>
 Install the mysql "snowtricks" database on your web server.
 
 File to modify to establish a connection with the "snowtricks" database and configure the sending of emails :<br>
