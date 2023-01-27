@@ -9,26 +9,25 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Constraints\NotNull;
 
 class AddTrickMessageType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('contents', TextareaType::class, [
                 'label' => 'Message',
                 'mapped' => false,
+                'empty_data' => '',
                 'constraints' => [
-                    new NotBlank(),
-                    new NotNull()
+                    new NotBlank()
                 ]
             ])
-            ->add('Envoyer', SubmitType::class)
+            ->add('Send', SubmitType::class)
         ;
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Trick::class

@@ -11,24 +11,23 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[UniqueEntity(fields: ['username', 'email'])]
-#[UniqueEntity(fields: ['username'], message: 'Il existe déjà un compte avec ce nom d\'utilisateur.')]
-#[UniqueEntity(fields: ['email'], message: 'Cette valeur est déjà utilisée.')]
+#[UniqueEntity(fields: ['username'], message: 'There is already an account with this username.')]
+#[UniqueEntity(fields: ['email'], message: 'This value is already in use.')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
-//class User
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(name: 'id_user')]
-    private ?int $id = null;
+    private ?int $id;
 
     #[ORM\Column(length: 255, unique: true)]
-    private ?string $username = null;
+    private ?string $username;
 
     #[ORM\Column(length: 255, unique: true)]
-    private ?string $email = null;
+    private ?string $email;
 
     #[ORM\Column(length: 255)]
-    private ?string $password = null;
+    private ?string $password;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $lastname = null;
@@ -39,11 +38,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $profile_picture = null;
 
-    #[ORM\Column(type: Types::SMALLINT)]
-    private ?int $deleted = null;
+    #[ORM\Column(type: Types::SMALLINT, options: ["default" => 0])]
+    private ?int $deleted = 0;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $registration_date = null;
+    private ?\DateTimeInterface $registration_date;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $unsubscribe_date = null;
@@ -198,10 +197,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function eraseCredentials()
+    public function eraseCredentials(): void
     {
         // If you store any temporary, sensitive data on the user, clear it here
-        // $this->plainPassword = null;
     }
 
     public function getUserIdentifier(): string

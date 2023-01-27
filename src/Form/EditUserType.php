@@ -13,16 +13,18 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\File;
+use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\NotNull;
+use Symfony\Component\Validator\Constraints\Regex;
 
 class EditUserType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('username', TextType::class, [
-                'label' => 'Nom d\'utilisateur',
+                'label' => 'Username',
                 'empty_data' => '',
                 'constraints' => [
                     new NotBlank(),
@@ -40,13 +42,30 @@ class EditUserType extends AbstractType
             ->add('password', RepeatedType::class, [
                 'type' => PasswordType::class,
                 'options' => ['attr' => ['class' => 'password-field']],
-                'first_options'  => ['label' => 'Mot de passe'],
-                'second_options' => ['label' => 'Confirmer le mot de passe'],
+                'first_options'  => [
+                    'label' => 'Password',
+                    'constraints' => [
+                        new Length([
+                            'min' => 6,
+                            'minMessage' => 'Your password must be at least {{ limit }} characters long.',
+                            // max length allowed by Symfony for security reasons
+                            'max' => 4096
+                        ]),
+                        new Regex([
+                            'pattern' => '/^[0-9A-Za-z-_]{8,}$/',
+                            'message' => 'The Password is invalid. It must contain at least 8 alphanumeric characters and contain no accents or special characters except "-" or "_".'
+                        ])
+                    ]
+                ],
+                'second_options' => [
+                    'label' => 'Confirm password'
+                ],
+                'invalid_message' => 'Password fields must match.',
                 'mapped' => false,
                 'required' => false
             ])
             ->add('lastname', TextType::class, [
-                'label' => 'Nom',
+                'label' => 'Lastname',
                 'required' => false,
                 'empty_data' => '',
                 'constraints' => [
@@ -54,7 +73,7 @@ class EditUserType extends AbstractType
                 ]
             ])
             ->add('firstname', TextType::class, [
-                'label' => 'Prénom',
+                'label' => 'Firstname',
                 'required' => false,
                 'empty_data' => '',
                 'constraints' => [
@@ -62,25 +81,25 @@ class EditUserType extends AbstractType
                 ]
             ])
             ->add('profile_picture', FileType::class, [
-                'label' => 'Image de profil',
+                'label' => 'Profile picture',
                 'mapped' => false,
                 'required' => false,
-                'help' => 'Formats acceptés : .avif, .gif, .jpeg, .jpg, .png, .svg, .webp',
+                'help' => 'Accepted formats: .avif, .gif, .jpeg, .jpg, .png, .svg, .webp',
                 'constraints' => [
                     new File([
                         'maxSize' => '3072k',
                         'mimeTypes' => [
                             'image/*'
                         ],
-                        'mimeTypesMessage' => 'Veuillez uploader un fichier image valide.'
+                        'mimeTypesMessage' => 'Please upload a valid image file.'
                     ])
                 ]
             ])
-            ->add('Valider', SubmitType::class)
+            ->add('validate', SubmitType::class)
         ;
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => User::class

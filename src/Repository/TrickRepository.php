@@ -20,7 +20,8 @@ class TrickRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Trick::class);
 
-        $this->CurrentDate = new \DateTime();
+        date_default_timezone_set('Europe/Paris');
+        $this->currentDate = new \DateTime();
     }
 
     public function save(Trick $entity, bool $flush = false): void
@@ -41,7 +42,7 @@ class TrickRepository extends ServiceEntityRepository
         }
     }
 
-    public function getTricks()
+    public function getTricks(): array
     {
         $queryBuilder = $this->createQueryBuilder('t')
             ->where('t.deleted = :deleted')
@@ -49,37 +50,35 @@ class TrickRepository extends ServiceEntityRepository
         return $queryBuilder->getQuery()->getResult();
     }
 
-    public function getTrick($slug)
+    public function getPublishedTricks(): array
+    {
+        $queryBuilder = $this->createQueryBuilder('t')
+            ->where('t.published = :published')
+            ->andWhere('t.deleted = :deleted')
+            ->setParameter('published', 1)
+            ->setParameter('deleted', 0);
+        return $queryBuilder->getQuery()->getResult();
+    }
+
+    public function getTrick(string $slug): Trick
     {
         $queryBuilder = $this->createQueryBuilder('t')
             ->where('t.slug = :slug')
-            ->andWhere('t.deleted = 0')
-            ->setParameter('slug', $slug);
+            ->andWhere('t.deleted = :deleted')
+            ->setParameter('slug', $slug)
+            ->setParameter('deleted', 0);
         return $queryBuilder->getQuery()->setMaxResults(1)->getOneOrNullResult();
     }
 
-//    /**
-//     * @return Trick[] Returns an array of Trick objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('t')
-//            ->andWhere('t.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('t.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?Trick
-//    {
-//        return $this->createQueryBuilder('t')
-//            ->andWhere('t.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    public function getPublishedTrick(string $slug): Trick
+    {
+        $queryBuilder = $this->createQueryBuilder('t')
+            ->where('t.slug = :slug')
+            ->andWhere('t.published = :published')
+            ->andWhere('t.deleted = :deleted')
+            ->setParameter('slug', $slug)
+            ->setParameter('published', 1)
+            ->setParameter('deleted', 0);
+        return $queryBuilder->getQuery()->setMaxResults(1)->getOneOrNullResult();
+    }
 }

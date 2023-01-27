@@ -11,15 +11,6 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class VideoController extends AbstractController
 {
-    /* Demo
-    #[Route('/video', name: 'app_video')]
-    public function index(): Response
-    {
-        return $this->render('video/index.html.twig', [
-            'controller_name' => 'VideoController',
-        ]);
-    }*/
-
     #[Route('/video/delete/{id}', name: 'app_video_delete', methods: ['delete'])]
     public function delete(int $id, VideoRepository $videoRepository): Response
     {

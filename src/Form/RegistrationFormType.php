@@ -15,6 +15,7 @@ use Symfony\Component\Validator\Constraints\IsTrue;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\NotNull;
+use Symfony\Component\Validator\Constraints\Regex;
 
 class RegistrationFormType extends AbstractType
 {
@@ -22,7 +23,7 @@ class RegistrationFormType extends AbstractType
     {
         $builder
             ->add('username', TextType::class, [
-                'label' => 'Nom d\'utilisateur',
+                'label' => 'Username',
                 'empty_data' => '',
                 'constraints' => [
                     new NotBlank(),
@@ -38,11 +39,11 @@ class RegistrationFormType extends AbstractType
                 ]
             ])
             ->add('agreeTerms', CheckboxType::class, [
-                'label' => 'Accepter les conditions',
+                'label' => 'Accept the conditions',
                 'mapped' => false,
                 'constraints' => [
                     new IsTrue([
-                        'message' => 'Vous devez accepter nos conditions d\'utilisation.'
+                        'message' => 'You have to accept our terms of service.'
                     ])
                 ]
             ])
@@ -54,23 +55,32 @@ class RegistrationFormType extends AbstractType
                     ]
                 ],
                 'first_options' => [
-                    'label' => 'Mot de passe',
+                    'label' => 'Password',
                     'constraints' => [
                         new NotBlank([
-                            'message' => 'Veuillez entrer un mot de passe.'
+                            'message' => 'Please enter your username.'
                         ]),
+                        new NotNull(),
                         new Length([
                             'min' => 6,
-                            'minMessage' => 'Votre mot de passe doit comporter au moins {{ limit }} caractères.',
+                            'minMessage' => 'Your password must be at least {{ limit }} characters long.',
                             // max length allowed by Symfony for security reasons
                             'max' => 4096
+                        ]),
+                        new Regex([
+                            'pattern' => '/^[0-9A-Za-z-_]{8,}$/',
+                            'message' => 'The Password is invalid. It must contain at least 8 alphanumeric characters and contain no accents or special characters except "-" or "_".'
                         ])
                     ]
                 ],
                 'second_options' => [
-                    'label' => 'Confirmer le mot de passe'
+                    'label' => 'Confirm password',
+                    'constraints' => [
+                        new NotBlank(),
+                        new NotNull()
+                    ]
                 ],
-                'invalid_message' => 'Les champs de mot de passe doivent correspondre.',
+                'invalid_message' => 'Password fields must match.',
                 // Instead of being set onto the object directly,
                 // this is read and encoded in the controller
                 'mapped' => false

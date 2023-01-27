@@ -10,17 +10,17 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class RemoveUserType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('Supprimer', SubmitType::class, [
-                'label' => 'Supprimer le compte',
+            ->add('remove', SubmitType::class, [
+                'label' => 'Delete account',
                 'attr' => ['class' => 'btn-danger']
             ])
         ;
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => User::class

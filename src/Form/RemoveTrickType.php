@@ -10,16 +10,16 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class RemoveTrickType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('Supprimer', SubmitType::class, [
+            ->add('remove', SubmitType::class, [
                 'attr' => ['class' => 'btn-danger']
             ])
         ;
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Trick::class

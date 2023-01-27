@@ -59,3 +59,8 @@ when@prod:
                 type: stream
                 channels: [deprecation]
                 path: php://stderr
+            deprecation_filter:
+                type: filter
+                handler: deprecation
+                level: info
+                channels: ["php"]

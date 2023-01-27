@@ -20,7 +20,7 @@ use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
 class SecurityController extends AbstractController
 {
     #[Route('/logout', name: 'app_logout', methods: ['GET'])]
-    public function logout()
+    public function logout(): Response
     {
         // controller can be blank: it will never be called!
         throw new \Exception('Don\'t forget to activate logout in security.yaml');
@@ -29,6 +29,10 @@ class SecurityController extends AbstractController
     #[Route('/forgotten-password', name: 'app_forgotten_password')]
     public function forgottenPassword(Request $request, ManagerRegistry $doctrine, UserRepository $userRepository, MailerInterface $mailer, TokenGeneratorInterface $tokenGenerator): Response
     {
+        if ($this->isGranted('ROLE_USER')) {
+            return $this->redirectToRoute('app_index_page');
+        }
+
         $form = $this->createForm(ResetPasswordFormType::class);
 
         $form->handleRequest($request);
@@ -81,8 +85,12 @@ class SecurityController extends AbstractController
     }
 
     #[Route('/reset-password/{token}', name: 'app_reset_password')]
-    public function resetPassword(Request $request, ManagerRegistry $doctrine, UserRepository $userRepository, UserPasswordHasherInterface $userPasswordHasher, string $token)
+    public function resetPassword(Request $request, ManagerRegistry $doctrine, UserRepository $userRepository, UserPasswordHasherInterface $userPasswordHasher, string $token): Response
     {
+        if ($this->isGranted('ROLE_USER')) {
+            return $this->redirectToRoute('app_index_page');
+        }
+
         $user = $userRepository->findOneBy(['reset_token' => $token]);
 
         if ($user === null) {
@@ -117,6 +125,5 @@ class SecurityController extends AbstractController
                 'form' => $form->createView()
             ]);
         }
-
     }
 }

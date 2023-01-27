@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Message;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Tools\Pagination\Paginator;
+use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -40,11 +41,10 @@ class MessageRepository extends ServiceEntityRepository
         }
     }
 
-    public function getMessages($id, $currentPage)
+    public function getMessages(int $id, int $currentPage): Paginator
     {
         $queryBuilder = $this->createQueryBuilder('m')
             ->where('m.trick = :id')
-            ->andWhere('m.status = 2')
             ->setParameter('id', $id)
             ->orderBy('m.id', 'DESC')
             ->getQuery();
@@ -54,7 +54,7 @@ class MessageRepository extends ServiceEntityRepository
         return $paginator;
     }
 
-    public function paginate($dql, $page, $limit = 5)
+    public function paginate(Query $dql, int $page, int $limit = 10): Paginator
     {
         $paginator = new Paginator($dql);
 
@@ -64,29 +64,4 @@ class MessageRepository extends ServiceEntityRepository
 
         return $paginator;
     }
-
-//    /**
-//     * @return Message[] Returns an array of Message objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('m')
-//            ->andWhere('m.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('m.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?Message
-//    {
-//        return $this->createQueryBuilder('m')
-//            ->andWhere('m.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
 }

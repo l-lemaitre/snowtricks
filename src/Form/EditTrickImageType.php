@@ -14,14 +14,14 @@ use Symfony\Component\Validator\Constraints\NotNull;
 
 class EditTrickImageType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('image', FileType::class, [
-                'label' => 'Image(s)',
+                'label' => 'Picture(s)',
                 'mapped' => false,
                 'multiple' => true,
-                'help' => 'Formats acceptés : .avif, .gif, .jpeg, .jpg, .png, .svg, .webp',
+                'help' => 'Accepted formats: .avif, .gif, .jpeg, .jpg, .png, .svg, .webp',
                 'constraints' => [
                     new All([
                         'constraints' => [
@@ -30,17 +30,17 @@ class EditTrickImageType extends AbstractType
                                 'mimeTypes' => [
                                     'image/*'
                                 ],
-                                'mimeTypesMessage' => 'Veuillez uploader un fichier image valide.'
+                                'mimeTypesMessage' => 'Please upload a valid image file.'
                             ])
                         ]
                     ])
                 ]
             ])
-            ->add('Valider', SubmitType::class)
+            ->add('validate', SubmitType::class)
         ;
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Trick::class

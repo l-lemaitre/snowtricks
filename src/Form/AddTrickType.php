@@ -22,23 +22,24 @@ use Symfony\Component\Validator\Constraints\NotNull;
 
 class AddTrickType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('category', EntityType::class, [
                 'class' => Category::class,
-                'label' => 'Catégorie',
+                'label' => 'Category',
                 'choice_label' => 'title',
+                'empty_data' => '',
                 'constraints' => [
                     new NotNull()
                 ]
             ])
             ->add('image', FileType::class, [
-                'label' => 'Image(s)',
+                'label' => 'Picture(s)',
                 'mapped' => false,
                 'required' => false,
                 'multiple' => true,
-                'help' => 'Formats acceptés : .avif, .gif, .jpeg, .jpg, .png, .svg, .webp',
+                'help' => 'Accepted formats: .avif, .gif, .jpeg, .jpg, .png, .svg, .webp',
                 'constraints' => [
                     new All([
                         'constraints' => [
@@ -63,34 +64,35 @@ class AddTrickType extends AbstractType
                 'allow_delete' => true
             ])
             ->add('title', TextType::class, [
-                'label' => 'Titre',
+                'label' => 'Title',
+                'empty_data' => '',
                 'constraints' => [
-                    new NotBlank([
-                        //'message' => 'Test.'
-                    ])
+                    new NotBlank()
                 ]
             ])
             ->add('contents', TextareaType::class, [
-                'label' => 'Contenu',
+                'label' => 'Contents',
+                'empty_data' => '',
                 'constraints' => [
                     new NotBlank()
                 ]
             ])
             ->add('published', ChoiceType::class, [
                 'choices'  => [
-                    'Oui' => true,
-                    'Non' => false
+                    'Yes' => true,
+                    'No' => false
                 ],
-                'label' => 'Publié',
+                'label' => 'Published',
+                'empty_data' => '',
                 'constraints' => [
                     new NotNull()
                 ]
             ])
-            ->add('Valider', SubmitType::class)
+            ->add('validate', SubmitType::class)
         ;
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Trick::class

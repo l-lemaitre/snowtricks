@@ -14,11 +14,11 @@ class ResetPasswordFormType extends AbstractType
     {
         $builder
             ->add('username', TextType::class, [
-                'label' => 'Nom d\'utilisateur',
+                'label' => 'Username',
                 'attr' => ['autocomplete' => 'username'],
                 'constraints' => [
                     new NotBlank([
-                        'message' => 'Entrez votre nom d\'utilisateur s\'il vous plaît',
+                        'message' => 'Please enter your username.',
                     ]),
                 ],
             ])

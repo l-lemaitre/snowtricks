@@ -6,6 +6,8 @@ use App\Entity\User;
 use App\Form\EditUserType;
 use App\Form\RemoveUserType;
 use App\Repository\UserRepository;
+use App\Service\ImageService;
+use App\Service\UserService;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
@@ -18,17 +20,8 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class UserController extends AbstractController
 {
-    /* Demo
-    #[Route('/user', name: 'app_user')]
-    public function index(): Response
-    {
-        return $this->render('user/index.html.twig', [
-            'controller_name' => 'UserController',
-        ]);
-    }*/
-
     #[Route('/user/edit/{id}', name: 'app_user_edit')]
-    public function edit(Request $request, ManagerRegistry $doctrine, UserPasswordHasherInterface $userPasswordHasher, SluggerInterface $slugger, UserRepository $userRepository, int $id): Response
+    public function edit(Request $request, ManagerRegistry $doctrine, UserPasswordHasherInterface $userPasswordHasher, SluggerInterface $slugger, UserRepository $userRepository, UserService $userService, ImageService $imageService, int $id): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $user = $this->getUser();
@@ -46,40 +39,12 @@ class UserController extends AbstractController
             $img = $form->get('profile_picture')->getData();
 
             if ($img) {
-                $originalFilename = pathinfo($img->getClientOriginalName(), PATHINFO_FILENAME);
-                // this is needed to safely include the file name as part of the URL
-                $safeFilename = $slugger->slug($originalFilename);
-                $newFilename = $safeFilename . '-' . uniqid() . '.' . $img->guessExtension();
-
-                // Move the file to the directory where images are stored
-                try {
-                    $img->move(
-                        $this->getParameter('img_directory'),
-                        $newFilename
-                    );
-                } catch (FileException $e) {
-                    // Handle exception if something happens during file upload
-                    return 'Error upload.';
-                }
-
-                $user->setProfilePicture("/img/" . $newFilename);
+                $addProfilePicture = $imageService->addProfilePicture($slugger, $user, $img, $this->getParameter('img_directory'));
             }
 
             $password = $form->get('password')->getData();
 
-            if (trim($password)) {
-                $user->setPassword(
-                    $userPasswordHasher->hashPassword(
-                        $user,
-                        $password
-                    )
-                );
-            } else {
-                $user->setPassword($user->getPassword());
-            }
-
-            $entityManager->persist($user);
-            $entityManager->flush();
+            $editUser = $userService->editUser($entityManager, $user, $userPasswordHasher, $password);
 
             $type = 'success';
             $message = 'Modification du profil réussi.';
@@ -90,16 +55,7 @@ class UserController extends AbstractController
         }
 
         if ($removeForm->isSubmitted() && $removeForm->isValid()) {
-            $user->setDeleted(1);
-            $user->setUnsubscribeDate($userRepository->CurrentDate);
-
-            $entityManager->persist($user);
-            $entityManager->flush();
-
-            $type = 'success';
-            $message = 'Suppression du compte réussi.';
-
-            $this->addFlash($type, $message);
+            $removeUser = $userService->removeUser($entityManager, $user, $userRepository->currentDate);
 
             return $this->redirectToRoute('app_logout');
         }

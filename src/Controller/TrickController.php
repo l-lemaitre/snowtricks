@@ -2,25 +2,23 @@
 
 namespace App\Controller;
 
-use App\Entity\Category;
 use App\Entity\Image;
 use App\Entity\Message;
-use App\Entity\status;
 use App\Entity\Trick;
-use App\Entity\User;
 use App\Entity\Video;
 use App\Form\AddTrickMessageType;
 use App\Form\AddTrickType;
 use App\Form\EditTrickImageType;
 use App\Form\EditTrickType;
 use App\Form\EditTrickVideoType;
-use App\Form\RemoveImageType;
 use App\Form\RemoveTrickType;
 use App\Repository\TrickRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use App\Service\ImageService;
+use App\Service\MessageService;
+use App\Service\TrickService;
+use App\Service\VideoService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\File\Exception\FileException;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -29,17 +27,27 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 
 class TrickController extends AbstractController
 {
-    /* Demo
-    #[Route('/trick', name: 'app_trick')]
-    public function index(): Response
+    private TrickRepository $trickRepository;
+
+    private TrickService $trickService;
+
+    private ImageService $imageService;
+
+    private MessageService $messageService;
+
+    private VideoService $videoService;
+
+    public function __construct(TrickRepository $trickRepository, TrickService $trickService, ImageService $imageService, MessageService $messageService, VideoService $videoService)
     {
-        return $this->render('trick/index.html.twig', [
-            'controller_name' => 'TrickController'
-        ]);
-    }*/
+        $this->trickRepository = $trickRepository;
+        $this->trickService = $trickService;
+        $this->imageService = $imageService;
+        $this->messageService = $messageService;
+        $this->videoService = $videoService;
+    }
 
     #[Route('/trick/add', name: 'app_trick_add')]
-    public function add(Request $request, ManagerRegistry $doctrine, SluggerInterface $slugger)
+    public function add(Request $request, ManagerRegistry $doctrine, SluggerInterface $slugger): Response
     {
         $user = $this->getUser();
         $userVerified = $user->isIsVerified();
@@ -50,65 +58,24 @@ class TrickController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $trick->setUser($user);
-
             $entityManager = $doctrine->getManager();
 
             $imgs = $form->get('image')->getData();
 
             if ($imgs) {
-                foreach ($imgs as $img) {
-                    $originalFilename = pathinfo($img->getClientOriginalName(), PATHINFO_FILENAME);
-                    // this is needed to safely include the file name as part of the URL
-                    $safeFilename = $slugger->slug($originalFilename);
-                    $newFilename = $safeFilename . '-' . uniqid() . '.' . $img->guessExtension();
-
-                    // Move the file to the directory where images are stored
-                    try {
-                        $img->move(
-                            $this->getParameter('img_directory'),
-                            $newFilename
-                        );
-                    } catch (FileException $e) {
-                        // Handle exception if something happens during file upload
-                        return 'Error upload.';
-                    }
-
-                    $image = new Image();
-                    $image->setTrick($trick);
-                    $image->setUrl("/img/" . $newFilename);
-
-                    $entityManager->persist($image);
-
-                    $trick->setImage($image);
-                    $trick->addImage($image);
-                }
+                $addTrickImage = $this->imageService->addTrickImage($entityManager, $slugger, $trick, $imgs, $this->getParameter('img_directory'));
             }
+
+            $slug = $form->get('title')->getData();
 
             $videos = $form->get('video')->getData();
 
             if ($videos) {
-                foreach ($videos as $videoUrl) {
-                    $video = new Video();
-                    $video->setTrick($trick);
-                    $video->setUrl($videoUrl);
-
-                    $entityManager->persist($video);
-                }
+                $addTrickVideo = $this->videoService->addTrickVideo($entityManager, $trick, $videos);
             }
 
-            $slug = $form->get('title')->getData();
-            $slug = strtolower($slug);
-            $slug = rawurlencode($slug);
-            $trick->setSlug($slug);
+            $addTrick = $this->trickService->addTrick($entityManager, $trick, $user, $slug, $this->trickRepository->currentDate);
 
-            $trick->setDeleted(0);
-
-            $trickRepository = new TrickRepository($doctrine);
-            $trick->setDateAdd($trickRepository->CurrentDate);
-            $trick->setDateUpdated($trickRepository->CurrentDate);
-
-            $entityManager->persist($trick);
             $entityManager->flush();
 
             $type = 'success';
@@ -126,13 +93,13 @@ class TrickController extends AbstractController
     }
 
     #[Route('/trick/edit/{slug}', name: 'app_trick_edit')]
-    public function edit(Request $request, ManagerRegistry $doctrine, SluggerInterface $slugger, TrickRepository $trickRepository, string $slug)
+    public function edit(Request $request, ManagerRegistry $doctrine, SluggerInterface $slugger, string $slug): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $user = $this->getUser();
         $userVerified = $user->isIsVerified();
 
-        $trick = $trickRepository->getTrick($slug);
+        $trick = $this->trickRepository->getTrick($slug);
 
         if ($trick) {
             $trickId = $trick->getId();
@@ -149,7 +116,7 @@ class TrickController extends AbstractController
         $images = $imageRepository->getImages($trickId);
 
         $videoRepository = $doctrine->getRepository(Video::class);
-        $videos = $videoRepository->getVideos($trickId);
+        $videos = $videoRepository->getVideos($slug);
 
         $imageForm->handleRequest($request);
         $form->handleRequest($request);
@@ -161,29 +128,7 @@ class TrickController extends AbstractController
         if ($imageForm->isSubmitted() && $imageForm->isValid()) {
             $imgs = $imageForm->get('image')->getData();
 
-            foreach ($imgs as $img) {
-                $originalFilename = pathinfo($img->getClientOriginalName(), PATHINFO_FILENAME);
-                // this is needed to safely include the file name as part of the URL
-                $safeFilename = $slugger->slug($originalFilename);
-                $newFilename = $safeFilename . '-' . uniqid() . '.' . $img->guessExtension();
-
-                // Move the file to the directory where images are stored
-                try {
-                    $img->move(
-                        $this->getParameter('img_directory'),
-                        $newFilename
-                    );
-                } catch (FileException $e) {
-                    // Handle exception if something happens during file upload
-                    return 'Error upload.';
-                }
-
-                $image = new Image();
-                $image->setTrick($trick);
-                $image->setUrl("/img/" . $newFilename);
-
-                $entityManager->persist($image);
-            }
+            $addTrickImage = $this->imageService->addTrickImage($entityManager, $slugger, $trick, $imgs, $this->getParameter('img_directory'));
 
             $entityManager->persist($trick);
             $entityManager->flush();
@@ -199,21 +144,7 @@ class TrickController extends AbstractController
         if ($videoForm->isSubmitted() && $videoForm->isValid()) {
             $videos = $videoForm->get('video');
 
-            foreach ($videos as $videoObject) {
-                $videosUrl[] = [
-                    "url" => $videoObject->get('url')->getData()
-                ];
-            }
-
-            $videosUrl = array_unique($videosUrl, SORT_REGULAR);
-
-            foreach ($videosUrl as $videoUrl) {
-                $video = new Video();
-                $video->setTrick($trick);
-                $video->setUrl($videoUrl['url']);
-
-                $entityManager->persist($video);
-            }
+            $addTrickVideo = $this->videoService->addTrickVideo($entityManager, $trick, $videos, true);
 
             $entityManager->flush();
 
@@ -227,15 +158,8 @@ class TrickController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $slug = $form->get('title')->getData();
-            $slug = strtolower($slug);
-            $slug = rawurlencode($slug);
 
-            $trick->setUser($user);
-            $trick->setSlug($slug);
-            $trick->setDateUpdated($trickRepository->CurrentDate);
-
-            $entityManager->persist($trick);
-            $entityManager->flush();
+            $editTrick = $this->trickService->editTrick($entityManager, $trick, $user, $slug, $this->trickRepository->currentDate);
 
             $type = 'success';
             $message = 'Modification de la figure réussie.';
@@ -246,11 +170,7 @@ class TrickController extends AbstractController
         }
 
         if ($removeForm->isSubmitted() && $removeForm->isValid()) {
-            $trick->setDeleted(1);
-            $trick->setDateUpdated($trickRepository->CurrentDate);
-
-            $entityManager->persist($trick);
-            $entityManager->flush();
+            $removeTrick = $this->trickService->removeTrick($entityManager, $trick, $this->trickRepository->currentDate);
 
             $type = 'success';
             $message = 'Suppression de la figure réussie.';
@@ -273,22 +193,18 @@ class TrickController extends AbstractController
     }
 
     #[Route('/trick/delete/{slug}', name: 'app_trick_delete', methods: ['post'])]
-    public function delete(ManagerRegistry $doctrine, TrickRepository $trickRepository, string $slug): Response
+    public function delete(ManagerRegistry $doctrine, string $slug): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $user = $this->getUser();
         $userVerified = $user->isIsVerified();
 
         if ($userVerified) {
-            $trick = $trickRepository->getTrick($slug);
+            $trick = $this->trickRepository->getTrick($slug);
 
             $entityManager = $doctrine->getManager();
 
-            $trick->setDeleted(1);
-            $trick->setDateUpdated($trickRepository->CurrentDate);
-
-            $entityManager->persist($trick);
-            $entityManager->flush();
+            $removeTrick = $this->trickService->removeTrick($entityManager, $trick, $this->trickRepository->currentDate);
 
             return new JsonResponse(true);
         } else {
@@ -297,24 +213,31 @@ class TrickController extends AbstractController
     }
 
     #[Route('/trick/{slug}', name: 'app_trick_show')]
-    public function show(Request $request, ManagerRegistry $doctrine, TrickRepository $trickRepository, string $slug): Response
+    public function show(Request $request, ManagerRegistry $doctrine, string $slug): Response
     {
         $user = $this->getUser();
+
         if ($user) {
             $userVerified = $user->isIsVerified();
+            $trick = $this->trickRepository->getTrick($slug);
         } else {
             $userVerified = false;
+            $trick = $this->trickRepository->getPublishedTrick($slug);
         }
 
-        $trick = $trickRepository->getTrick($slug);
-        $trickId = $trick->getId();
+        if ($trick) {
+            $trickId = $trick->getId();
+        } else {
+            $trickId = false;
+        }
+
         $page = $request->query->get('page');
 
         $imageRepository = $doctrine->getRepository(Image::class);
         $images = $imageRepository->getImages($trickId);
 
         $videoRepository = $doctrine->getRepository(Video::class);
-        $videos = $videoRepository->getVideos($trickId);
+        $videos = $videoRepository->getVideos($slug);
 
         $messageRepository = $doctrine->getRepository(Message::class);
         $messages = $messageRepository->getMessages($trickId, $page);
@@ -327,25 +250,11 @@ class TrickController extends AbstractController
         $messageForm->handleRequest($request);
 
         if ($messageForm->isSubmitted() && $messageForm->isValid()) {
-            $message = new Message();
-
-            $message->setUser($user);
-
-            $message->setTrick($trick);
-
-            $status = $doctrine->getRepository(Status::class)->find(2);
-            $message->setStatus($status);
+            $entityManager = $doctrine->getManager();
 
             $contents = $messageForm->get('contents')->getData();
-            $message->setContents($contents);
 
-            $trickRepository = new TrickRepository($doctrine);
-            $message->setDateAdd($trickRepository->CurrentDate);
-            $message->setDateUpdated($trickRepository->CurrentDate);
-
-            $entityManager = $doctrine->getManager();
-            $entityManager->persist($message);
-            $entityManager->flush();
+            $addMessage = $this->messageService->addMessage($entityManager, $trick, $user, $contents, $this->trickRepository->currentDate);
 
             $type = 'success';
             $flashMessage = 'Votre message a été ajouté.';
@@ -361,7 +270,6 @@ class TrickController extends AbstractController
 
         return $this->render('trick/trick.html.twig', [
             'userVerified' => $userVerified,
-            'userProfilePicture' => $trick->getUser()->getProfilePicture(),
             'trick' => $trick,
             'images' => $images,
             'videos' => $videos,

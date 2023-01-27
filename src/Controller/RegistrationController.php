@@ -46,8 +46,7 @@ class RegistrationController extends AbstractController
                 )
             );
 
-            $user->setDeleted(0);
-            $user->setRegistrationDate($userRepository->CurrentDate);
+            $user->setRegistrationDate($userRepository->currentDate);
             $user->setRoles(['ROLE_USER']);
 
             $entityManager->persist($user);
