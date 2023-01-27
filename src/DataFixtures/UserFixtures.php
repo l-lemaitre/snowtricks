@@ -16,8 +16,8 @@ class UserFixtures extends Fixture
     public const USERS = [
         [
             'username' => 'Admin',
-            'email' => 'ludoviclemaitre@orange.fr',
-            'password' => 'test55'
+            'email' => 'contact@llemaitre.com',
+            'password' => 'admin_55'
         ]
     ];
 

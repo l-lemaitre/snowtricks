@@ -5,7 +5,7 @@ controllers:
 app_forgotten_password:
     path: /forgotten-password
     controller: App\Controller\SecurityController::forgottenPassword
-    methods: GET
+    methods: [GET, POST]
 
 app_home_page:
     path: /
@@ -20,7 +20,7 @@ app_index_page:
 app_login:
     path: /login
     controller: App\Controller\LoginController::index
-    methods: GET
+    methods: [GET, POST]
 
 app_mailer_sendemail:
     path: /email
@@ -30,27 +30,27 @@ app_mailer_sendemail:
 app_register:
     path: /register
     controller: App\Controller\RegistrationController::register
-    methods: GET
+    methods: [GET, POST]
 
 app_reset_password:
     path: /reset-password/{token}
     controller: App\Controller\SecurityController::resetPassword
-    methods: GET
+    methods: [GET, POST]
 
 app_trick_add:
     path: /trick/add
     controller: App\Controller\TrickController::add
-    methods: GET
+    methods: [GET, POST]
 
 app_trick_edit:
     path: /trick/edit/{slug}
     controller: App\Controller\TrickController::edit
-    methods: GET
+    methods: [GET, POST]
 
 app_trick_show:
     path: /trick/{slug}
     controller: App\Controller\TrickController::show
-    methods: GET
+    methods: [GET, POST]
 
 app_tricks:
     path: /tricks
@@ -60,7 +60,7 @@ app_tricks:
 app_user_edit:
     path: /user/edit/{id}
     controller: App\Controller\UserController::edit
-    methods: GET
+    methods: [GET, POST]
 
 app_verify_email:
     path: /verify/email

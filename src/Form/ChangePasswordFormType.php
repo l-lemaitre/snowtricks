@@ -38,8 +38,8 @@ class ChangePasswordFormType extends AbstractType
                             'max' => 4096
                         ]),
                         new Regex([
-                            'pattern' => '/^[0-9A-Za-z]{8,}$/',
-                            'message' => 'The Password is invalid. It must contain at least 8 alphanumeric characters and contain no accents or special characters.'
+                            'pattern' => '/^[0-9A-Za-z-_]{8,}$/',
+                            'message' => 'The Password is invalid. It must contain at least 8 alphanumeric characters and contain no accents or special characters except "-" or "_".'
                         ])
                     ]
                 ],

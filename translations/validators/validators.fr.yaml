@@ -7,4 +7,4 @@ Your password must be at least {{ limit }} characters long.: Votre mot de passe 
 Password fields must match.: Les champs de mot de passe doivent correspondre.
 Please upload a valid image file.: Veuillez uploader un fichier image valide.
 This video already exists for this figure.: Cette vidéo existe déjà pour cette figure.
-The Password is invalid. It must contain at least 8 alphanumeric characters and contain no accents or special characters.: Le Mot de passe n'est pas valide. Il doit contenir 8 caractères alphanumériques au minimum et ne comporter aucun accent ni caractères spéciaux.
+The Password is invalid. It must contain at least 8 alphanumeric characters and contain no accents or special characters except "-" or "_".: Le Mot de passe n'est pas valide. Il doit contenir 8 caractères alphanumériques au minimum et ne comporter aucun accent ni caractères spéciaux hormis "-" ou "_".
