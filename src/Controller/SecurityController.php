@@ -5,13 +5,11 @@ namespace App\Controller;
 use App\Form\ResetPasswordFormType;
 use App\Form\ChangePasswordFormType;
 use App\Repository\UserRepository;
+use App\Service\MailService;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Mime\Address;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -27,7 +25,7 @@ class SecurityController extends AbstractController
     }
 
     #[Route('/forgotten-password', name: 'app_forgotten_password')]
-    public function forgottenPassword(Request $request, ManagerRegistry $doctrine, UserRepository $userRepository, MailerInterface $mailer, TokenGeneratorInterface $tokenGenerator): Response
+    public function forgottenPassword(Request $request, ManagerRegistry $doctrine, MailService $mailService, UserRepository $userRepository, TokenGeneratorInterface $tokenGenerator): Response
     {
         if ($this->isGranted('ROLE_USER')) {
             return $this->redirectToRoute('app_index_page');
@@ -62,17 +60,7 @@ class SecurityController extends AbstractController
 
             $resetPasswordUrl = $this->generateUrl('app_reset_password', array('token' => $resetToken), UrlGeneratorInterface::ABSOLUTE_URL);
 
-            $email = (new TemplatedEmail())
-                ->from(new Address('contact@llemaitre.com', 'SnowTricks'))
-                ->to($user->getEmail())
-                ->subject('Votre demande de réinitialisation de mot de passe')
-                ->htmlTemplate('reset_password/reset_password_email.html.twig')
-                ->context([
-                    'resetPasswordUrl' => $resetPasswordUrl
-                ])
-            ;
-
-            $mailer->send($email);
+            $mailService->setTemplatedMail('contact@llemaitre.com', 'SnowTricks', $user->getEmail(), 'Votre demande de réinitialisation de mot de passe', 'reset_password/reset_password_email.html.twig', ['resetPasswordUrl' => $resetPasswordUrl], true);
 
             $this->addFlash('success', 'E-mail de réinitialisation du mot de passe envoyé.');
 

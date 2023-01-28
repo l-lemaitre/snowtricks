@@ -11,7 +11,7 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 
 class ImageService
 {
-    public function addTrickImage(ObjectManager $entityManager, SluggerInterface $slugger, Trick $trick, array $imgs,string $imgDirectory): bool
+    public function addTrickImage(ObjectManager $entityManager, SluggerInterface $slugger, Trick $trick, array $imgs,string $imgDirectory): void
     {
         foreach ($imgs as $img) {
             $originalFilename = pathinfo($img->getClientOriginalName(), PATHINFO_FILENAME);
@@ -31,11 +31,9 @@ class ImageService
             $trick->setImage($image);
             $trick->addImage($image);
         }
-
-        return true;
     }
 
-    public function addProfilePicture(SluggerInterface $slugger, User $user, UploadedFile $img, string $imgDirectory): bool
+    public function addProfilePicture(SluggerInterface $slugger, User $user, UploadedFile $img, string $imgDirectory): void
     {
         $originalFilename = pathinfo($img->getClientOriginalName(), PATHINFO_FILENAME);
         $safeFilename = $slugger->slug($originalFilename);
@@ -44,7 +42,5 @@ class ImageService
         $img->move($imgDirectory, $newFilename);
 
         $user->setProfilePicture("/img/" . $newFilename);
-
-        return true;
     }
 }

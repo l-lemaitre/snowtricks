@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Image;
+use App\Entity\Trick;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -39,7 +40,7 @@ class ImageRepository extends ServiceEntityRepository
         }
     }
 
-    public function getImages(int $id): array
+    public function getImages(Trick $id): array
     {
         $queryBuilder = $this->createQueryBuilder('i')
             ->where('i.trick = :id')

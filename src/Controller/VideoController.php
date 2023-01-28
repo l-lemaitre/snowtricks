@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\Video;
 use App\Repository\VideoRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;

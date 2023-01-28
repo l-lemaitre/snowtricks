@@ -18,7 +18,7 @@ class Message
     private ?string $contents;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $date_add;
+    private ?\DateTimeInterface $dateAdd;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $date_updated;
@@ -50,12 +50,12 @@ class Message
 
     public function getDateAdd(): ?\DateTimeInterface
     {
-        return $this->date_add;
+        return $this->dateAdd;
     }
 
-    public function setDateAdd(\DateTimeInterface $date_add): self
+    public function setDateAdd(\DateTimeInterface $dateAdd): self
     {
-        $this->date_add = $date_add;
+        $this->dateAdd = $dateAdd;
 
         return $this;
     }

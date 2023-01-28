@@ -36,16 +36,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $firstname = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $profile_picture = null;
+    private ?string $profilePicture = null;
 
     #[ORM\Column(type: Types::SMALLINT, options: ["default" => 0])]
     private ?int $deleted = 0;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $registration_date;
+    private ?\DateTimeInterface $registrationDate;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $unsubscribe_date = null;
+    private ?\DateTimeInterface $unsubscribeDate = null;
 
     #[ORM\Column(type: 'boolean')]
     private $isVerified = false;
@@ -54,7 +54,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $roles = [];
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $reset_token = null;
+    private ?string $resetToken = null;
 
     public function getId(): ?int
     {
@@ -123,12 +123,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getProfilePicture(): ?string
     {
-        return $this->profile_picture;
+        return $this->profilePicture;
     }
 
-    public function setProfilePicture(?string $profile_picture): self
+    public function setProfilePicture(?string $profilePicture): self
     {
-        $this->profile_picture = $profile_picture;
+        $this->profilePicture = $profilePicture;
 
         return $this;
     }
@@ -147,29 +147,29 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getRegistrationDate(): ?\DateTimeInterface
     {
-        return $this->registration_date;
+        return $this->registrationDate;
     }
 
-    public function setRegistrationDate(\DateTimeInterface $registration_date): self
+    public function setRegistrationDate(\DateTimeInterface $registrationDate): self
     {
-        $this->registration_date = $registration_date;
+        $this->registrationDate = $registrationDate;
 
         return $this;
     }
 
     public function getUnsubscribeDate(): ?\DateTimeInterface
     {
-        return $this->unsubscribe_date;
+        return $this->unsubscribeDate;
     }
 
-    public function setUnsubscribeDate(?\DateTimeInterface $unsubscribe_date): self
+    public function setUnsubscribeDate(?\DateTimeInterface $unsubscribeDate): self
     {
-        $this->unsubscribe_date = $unsubscribe_date;
+        $this->unsubscribeDate = $unsubscribeDate;
 
         return $this;
     }
 
-    public function isVerified(): bool
+    public function isIsVerified(): ?bool
     {
         return $this->isVerified;
     }
@@ -207,19 +207,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return (string) $this->username;
     }
 
-    public function isIsVerified(): ?bool
-    {
-        return $this->isVerified;
-    }
-
     public function getResetToken(): ?string
     {
-        return $this->reset_token;
+        return $this->resetToken;
     }
 
-    public function setResetToken(?string $reset_token): self
+    public function setResetToken(?string $resetToken): self
     {
-        $this->reset_token = $reset_token;
+        $this->resetToken = $resetToken;
 
         return $this;
     }

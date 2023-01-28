@@ -63,7 +63,7 @@ class TrickController extends AbstractController
             $imgs = $form->get('image')->getData();
 
             if ($imgs) {
-                $addTrickImage = $this->imageService->addTrickImage($entityManager, $slugger, $trick, $imgs, $this->getParameter('img_directory'));
+                $this->imageService->addTrickImage($entityManager, $slugger, $trick, $imgs, $this->getParameter('img_directory'));
             }
 
             $slug = $form->get('title')->getData();
@@ -71,10 +71,10 @@ class TrickController extends AbstractController
             $videos = $form->get('video')->getData();
 
             if ($videos) {
-                $addTrickVideo = $this->videoService->addTrickVideo($entityManager, $trick, $videos);
+                $this->videoService->addTrickVideo($entityManager, $trick, $videos);
             }
 
-            $addTrick = $this->trickService->addTrick($entityManager, $trick, $user, $slug, $this->trickRepository->currentDate);
+            $this->trickService->addTrick($entityManager, $trick, $user, $slug, $this->trickRepository->currentDate);
 
             $entityManager->flush();
 
@@ -101,19 +101,17 @@ class TrickController extends AbstractController
 
         $trick = $this->trickRepository->getTrick($slug);
 
-        if ($trick) {
-            $trickId = $trick->getId();
-        } else {
-            $trickId = false;
-        }
-
         $imageForm = $this->createForm(EditTrickImageType::class, $trick);
         $form = $this->createForm(EditTrickType::class, $trick);
         $videoForm = $this->createForm(EditTrickVideoType::class, $trick);
         $removeForm = $this->createForm(RemoveTrickType::class, $trick);
 
-        $imageRepository = $doctrine->getRepository(Image::class);
-        $images = $imageRepository->getImages($trickId);
+        if ($trick) {
+            $imageRepository = $doctrine->getRepository(Image::class);
+            $images = $imageRepository->getImages($trick);
+        } else {
+            $images = false;
+        }
 
         $videoRepository = $doctrine->getRepository(Video::class);
         $videos = $videoRepository->getVideos($slug);
@@ -128,7 +126,7 @@ class TrickController extends AbstractController
         if ($imageForm->isSubmitted() && $imageForm->isValid()) {
             $imgs = $imageForm->get('image')->getData();
 
-            $addTrickImage = $this->imageService->addTrickImage($entityManager, $slugger, $trick, $imgs, $this->getParameter('img_directory'));
+            $this->imageService->addTrickImage($entityManager, $slugger, $trick, $imgs, $this->getParameter('img_directory'));
 
             $entityManager->persist($trick);
             $entityManager->flush();
@@ -144,7 +142,7 @@ class TrickController extends AbstractController
         if ($videoForm->isSubmitted() && $videoForm->isValid()) {
             $videos = $videoForm->get('video');
 
-            $addTrickVideo = $this->videoService->addTrickVideo($entityManager, $trick, $videos, true);
+            $this->videoService->addTrickVideo($entityManager, $trick, $videos, true);
 
             $entityManager->flush();
 
@@ -159,7 +157,7 @@ class TrickController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $slug = $form->get('title')->getData();
 
-            $editTrick = $this->trickService->editTrick($entityManager, $trick, $user, $slug, $this->trickRepository->currentDate);
+            $this->trickService->editTrick($entityManager, $trick, $user, $slug, $this->trickRepository->currentDate);
 
             $type = 'success';
             $message = 'Modification de la figure réussie.';
@@ -170,7 +168,7 @@ class TrickController extends AbstractController
         }
 
         if ($removeForm->isSubmitted() && $removeForm->isValid()) {
-            $removeTrick = $this->trickService->removeTrick($entityManager, $trick, $this->trickRepository->currentDate);
+            $this->trickService->removeTrick($entityManager, $trick, $this->trickRepository->currentDate);
 
             $type = 'success';
             $message = 'Suppression de la figure réussie.';
@@ -204,7 +202,7 @@ class TrickController extends AbstractController
 
             $entityManager = $doctrine->getManager();
 
-            $removeTrick = $this->trickService->removeTrick($entityManager, $trick, $this->trickRepository->currentDate);
+            $this->trickService->removeTrick($entityManager, $trick, $this->trickRepository->currentDate);
 
             return new JsonResponse(true);
         } else {
@@ -225,26 +223,30 @@ class TrickController extends AbstractController
             $trick = $this->trickRepository->getPublishedTrick($slug);
         }
 
-        if ($trick) {
-            $trickId = $trick->getId();
-        } else {
-            $trickId = false;
-        }
-
         $page = $request->query->get('page');
 
-        $imageRepository = $doctrine->getRepository(Image::class);
-        $images = $imageRepository->getImages($trickId);
+        if ($trick) {
+            $imageRepository = $doctrine->getRepository(Image::class);
+            $images = $imageRepository->getImages($trick);
+        } else {
+            $images = false;
+        }
 
         $videoRepository = $doctrine->getRepository(Video::class);
         $videos = $videoRepository->getVideos($slug);
 
-        $messageRepository = $doctrine->getRepository(Message::class);
-        $messages = $messageRepository->getMessages($trickId, $page);
+        if ($trick) {
+            $messageRepository = $doctrine->getRepository(Message::class);
+            $messages = $messageRepository->getMessages($trick, $page);
 
-        $limit = 10;
-        $maxPages = ceil($messages->count() / $limit);
-        $thisPage = $page;
+            $limit = 10;
+            $maxPages = ceil($messages->count() / $limit);
+            $thisPage = $page;
+        } else {
+            $messages = false;
+            $maxPages = false;
+            $thisPage = false;
+        }
 
         $messageForm = $this->createForm(AddTrickMessageType::class, $trick);
         $messageForm->handleRequest($request);
@@ -254,7 +256,7 @@ class TrickController extends AbstractController
 
             $contents = $messageForm->get('contents')->getData();
 
-            $addMessage = $this->messageService->addMessage($entityManager, $trick, $user, $contents, $this->trickRepository->currentDate);
+            $this->messageService->addMessage($entityManager, $trick, $user, $contents, $this->trickRepository->currentDate);
 
             $type = 'success';
             $flashMessage = 'Votre message a été ajouté.';

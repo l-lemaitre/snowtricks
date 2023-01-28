@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\User;
 use App\Form\EditUserType;
 use App\Form\RemoveUserType;
 use App\Repository\UserRepository;
@@ -10,13 +9,11 @@ use App\Service\ImageService;
 use App\Service\UserService;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class UserController extends AbstractController
 {
@@ -39,12 +36,12 @@ class UserController extends AbstractController
             $img = $form->get('profile_picture')->getData();
 
             if ($img) {
-                $addProfilePicture = $imageService->addProfilePicture($slugger, $user, $img, $this->getParameter('img_directory'));
+                $imageService->addProfilePicture($slugger, $user, $img, $this->getParameter('img_directory'));
             }
 
             $password = $form->get('password')->getData();
 
-            $editUser = $userService->editUser($entityManager, $user, $userPasswordHasher, $password);
+            $userService->editUser($entityManager, $user, $userPasswordHasher, $password);
 
             $type = 'success';
             $message = 'Modification du profil réussi.';
@@ -55,7 +52,7 @@ class UserController extends AbstractController
         }
 
         if ($removeForm->isSubmitted() && $removeForm->isValid()) {
-            $removeUser = $userService->removeUser($entityManager, $user, $userRepository->currentDate);
+            $userService->removeUser($entityManager, $user, $userRepository->currentDate);
 
             return $this->redirectToRoute('app_logout');
         }

@@ -8,4 +8,4 @@ Run the command composer update.<br>
 Install the mysql "snowtricks" database on your web server.
 
 File to modify to establish a connection with the "snowtricks" database and configure the sending of emails :<br>
-.env
+snowtricks-main/.env
