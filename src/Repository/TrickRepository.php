@@ -60,7 +60,7 @@ class TrickRepository extends ServiceEntityRepository
         return $queryBuilder->getQuery()->getResult();
     }
 
-    public function getTrick(string $slug): Trick
+    public function getTrick(string $slug): ?Trick
     {
         $queryBuilder = $this->createQueryBuilder('t')
             ->where('t.slug = :slug')
@@ -70,7 +70,7 @@ class TrickRepository extends ServiceEntityRepository
         return $queryBuilder->getQuery()->setMaxResults(1)->getOneOrNullResult();
     }
 
-    public function getPublishedTrick(string $slug): Trick
+    public function getPublishedTrick(string $slug): ?Trick
     {
         $queryBuilder = $this->createQueryBuilder('t')
             ->where('t.slug = :slug')

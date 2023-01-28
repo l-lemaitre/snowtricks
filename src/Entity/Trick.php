@@ -35,10 +35,10 @@ class Trick
     private ?int $deleted = 0;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $date_add;
+    private ?\DateTimeInterface $dateAdd;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $date_updated;
+    private ?\DateTimeInterface $dateUpdated;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false, referencedColumnName: 'id_category')]
@@ -135,24 +135,24 @@ class Trick
 
     public function getDateAdd(): ?\DateTimeInterface
     {
-        return $this->date_add;
+        return $this->dateAdd;
     }
 
-    public function setDateAdd(\DateTimeInterface $date_add): self
+    public function setDateAdd(\DateTimeInterface $dateAdd): self
     {
-        $this->date_add = $date_add;
+        $this->dateAdd = $dateAdd;
 
         return $this;
     }
 
     public function getDateUpdated(): ?\DateTimeInterface
     {
-        return $this->date_updated;
+        return $this->dateUpdated;
     }
 
-    public function setDateUpdated(\DateTimeInterface $date_updated): self
+    public function setDateUpdated(\DateTimeInterface $dateUpdated): self
     {
-        $this->date_updated = $date_updated;
+        $this->dateUpdated = $dateUpdated;
 
         return $this;
     }

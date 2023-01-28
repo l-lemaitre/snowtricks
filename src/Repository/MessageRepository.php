@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Message;
+use App\Entity\Trick;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\ORM\Query;
@@ -41,7 +42,7 @@ class MessageRepository extends ServiceEntityRepository
         }
     }
 
-    public function getMessages(int $id, int $currentPage): Paginator
+    public function getMessages(Trick $id, int $currentPage): Paginator
     {
         $queryBuilder = $this->createQueryBuilder('m')
             ->where('m.trick = :id')
