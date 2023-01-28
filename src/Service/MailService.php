@@ -25,7 +25,9 @@ class MailService
         ;
 
         if ($send) {
-            return $this->mailer->send($email);
+            $this->mailer->send($email);
+
+            return null;
         } else {
             return $email;
         }
